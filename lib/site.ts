@@ -1,4 +1,5 @@
 import settings from "@/content/site.json";
+import { t } from "./i18n";
 
 /**
  * Site-wide settings. The editable values (email, links, founder's story) live
@@ -21,11 +22,11 @@ export const site = {
 };
 
 export const nav = [
-  { href: "/papers", label: "Working Papers" },
-  { href: "/briefs", label: "Briefs" },
-  { href: "/forum", label: "Forum" },
-  { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
+  { href: "/papers", label: t.nav.papers },
+  { href: "/briefs", label: t.nav.briefs },
+  { href: "/forum", label: t.nav.forum },
+  { href: "/about", label: t.nav.about },
+  { href: "/contact", label: t.nav.contact },
 ] as const;
 
 /** True for values that are still "[placeholders]" or empty. */

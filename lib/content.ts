@@ -204,7 +204,7 @@ export function getJudges(): Person[] {
   return readPeople("judges.json", "judges");
 }
 
-export type TimelineItem = { label: string; date: string };
+export type TimelineItem = { label: string; date: string; /** Optional ISO date for the "you are here" marker. */ isoDate?: string };
 export type RubricItem = { criterion: string; points: number; description: string };
 export type PastEdition = {
   name: string;
@@ -226,9 +226,26 @@ export type ForumData = {
     rubric: RubricItem[];
     awards: string[];
     howToSubmit: string;
+    /** ISO date/time of the submission deadline; drives the countdown. Empty = not set. */
+    submissionDeadline?: string;
+    /** ISO dates of the forum itself (machine-readable twin of `dates`). */
+    forumDateStart?: string;
+    forumDateEnd?: string;
+    /** Where "Submit your research" points: the Google Form or the on-site form. */
+    registrationMode?: "google_form" | "site";
+    /** On-site registration switch (Phase 5). */
+    registrationOpen?: boolean;
   };
   pastEditions: PastEdition[];
 };
+
+/** Parses an ISO date string; returns null for empty, placeholder or invalid values. */
+export function parseIsoDate(value: string | undefined | null): Date | null {
+  if (!value || value.trim().startsWith("[")) return null;
+  if (!/^\d{4}-\d{2}-\d{2}/.test(value)) return null;
+  const d = new Date(value.length === 10 ? `${value}T23:59:59Z` : value);
+  return Number.isNaN(d.getTime()) ? null : d;
+}
 
 export function getForum(): ForumData {
   const data = readJson<ForumData | null>("forum.json", null);

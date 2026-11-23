@@ -8,7 +8,20 @@ Source for **silkroadecon.asia**: Next.js (App Router) + TypeScript + Tailwind C
 npm install
 npm run dev        # http://localhost:3000
 npm run build      # the same build Vercel runs; fails with a clear message if a content file is wrong
+npm run test:e2e   # builds nothing: run `npm run build` first. Accessibility (axe), no-JS, reduced motion, search, menu, feeds, /admin
 ```
+
+## Design and animation (v2)
+
+The design is editorial: Source Serif 4 and Inter, a 12-column grid, numbered sections, a faint paper grain and a hand-drawn ornament set. The plan and its reasoning are in `docs/v2-plan.md`.
+
+### Editing animations
+- **Timings and easing** live in two places that mirror each other: `lib/motion.ts` and the `:root` variables at the top of `app/globals.css` (`--dur-*`, `--ease-*`).
+- **Scroll reveals** are CSS. Add `data-reveal="up"` (or `fade`, `rise`, `left`, `wipe`, `wipe-up`, `bar`) to any element; delay it with `style={{ "--d": "200ms" }}`. `components/motion/Revealer.tsx` marks elements as they enter the screen.
+- **Things visible when a page opens** use `load-in`, `load-left`, `load-fade` or `load-draw` classes instead (pure CSS, no waiting for JavaScript, keeps pages fast).
+- **Line drawings:** SVG paths with `pathLength={1}` and `className="draw"` inside an element with `data-draw` draw themselves.
+- **The map scene** is `components/home/MapScene.tsx` (phone frames) and `components/home/MapScrub.tsx` (desktop, GSAP). The map shapes come from `scripts/build-map.mjs` (Natural Earth, public domain): see the comment at the top of that file to rebuild them.
+- **Reduced motion:** if a visitor's device asks for less motion, every animation is switched off in the `@media (prefers-reduced-motion: reduce)` block of `app/globals.css`. Keep it that way for anything new.
 
 ## Editing the site: the admin page (no code)
 
@@ -52,7 +65,7 @@ Everything the admin page edits is a plain file, so you can also edit files on G
 | Working papers | `content/papers/*.mdx`; PDFs in `public/papers/` |
 | Email, Instagram, Google Form, founder's story | `content/site.json` |
 | Team / judges | `content/team.json`, `content/judges.json` |
-| Forum | `content/forum.json` |
+| Forum | `content/forum.json` (incl. exact deadline for the countdown, and the registration switch) |
 | Logo and favicon | `public/logo.png` (square PNG, at least 512×512; replace the placeholder) |
 
 To add a brief or paper by hand, copy `templates/brief.mdx` or `templates/paper.mdx` into `content/briefs/` or `content/papers/`, rename it, fill it in, and push. The file name becomes the URL. If a required field is missing, or two papers share a number, the build fails with a message naming the file, and the live site keeps its previous version.

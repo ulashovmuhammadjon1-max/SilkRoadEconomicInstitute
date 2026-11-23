@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Button } from "@/components/Button";
-import { CopyButton } from "@/components/CopyButton";
+import { ViewTransition, type CSSProperties } from "react";
+import { CiteBox } from "@/components/CiteBox";
 import { Mdx } from "@/components/Mdx";
+import { RevealLines } from "@/components/motion/RevealLines";
+import { Glyph } from "@/components/ornaments/Glyph";
+import { EmblemPapers } from "@/components/ornaments/Ornaments";
 import { WithPlaceholders } from "@/components/Placeholder";
+import { citeApa, citeBibtex, citeChicago, citeSimple } from "@/lib/cite";
 import { getAllPapers, getPaper } from "@/lib/content";
-import { formatDate, joinNames, yearOf } from "@/lib/format";
+import { formatDate, joinNames } from "@/lib/format";
 import { absoluteUrl, site } from "@/lib/site";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -29,13 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     authors: paper.authors.map((name) => ({ name })),
     keywords: paper.keywords,
     alternates: { canonical: `/papers/${paper.slug}` },
-    openGraph: {
-      type: "article",
-      url: `/papers/${paper.slug}`,
-      title: paper.title,
-      description,
-      authors: paper.authors,
-    },
+    openGraph: { type: "article", url: `/papers/${paper.slug}`, title: paper.title, description, authors: paper.authors },
     other: {
       // Google Scholar indexing tags
       citation_title: paper.title,
@@ -52,92 +50,94 @@ export default async function PaperPage({ params }: Props) {
   const paper = getPaper((await params).slug);
   if (!paper) notFound();
 
-  const citation = `${joinNames(paper.authors)} (${yearOf(paper.date)}). ${paper.title}. SREI Working Paper No. ${paper.paperNumber}. ${site.name}. ${absoluteUrl(`/papers/${paper.slug}`)}`;
+  const meta: [string, React.ReactNode][] = [
+    [paper.authors.length > 1 ? "Authors" : "Author", joinNames(paper.authors)],
+    ["Date", <WithPlaceholders key="d" text={formatDate(paper.date)} />],
+    ...(paper.forumEdition ? [["Forum edition", <WithPlaceholders key="f" text={paper.forumEdition} />] as [string, React.ReactNode]] : []),
+    ...(paper.note ? [["Note", <WithPlaceholders key="n" text={paper.note} />] as [string, React.ReactNode]] : []),
+  ];
 
   return (
     <article>
-      <header className="border-b border-cream-300 bg-cream-50">
-        <div className="mx-auto max-w-4xl px-5 py-12 md:py-16">
-          <nav aria-label="Breadcrumb" className="text-sm">
-            <Link href="/papers" className="text-navy underline decoration-gold underline-offset-4">
-              Working Papers
-            </Link>
-          </nav>
-          <p className="eyebrow mt-6">SREI Working Paper No. {paper.paperNumber}</p>
-          <h1 className="mt-3 font-serif text-3xl leading-tight text-navy md:text-[2.6rem]">
-            <WithPlaceholders text={paper.title} />
-          </h1>
-          <dl className="mt-6 grid gap-x-8 gap-y-3 text-sm sm:grid-cols-[auto_1fr]">
-            <dt className="font-semibold text-navy">{paper.authors.length > 1 ? "Authors" : "Author"}</dt>
-            <dd>{joinNames(paper.authors)}</dd>
-            <dt className="font-semibold text-navy">Date</dt>
-            <dd>
-              <WithPlaceholders text={formatDate(paper.date)} />
-            </dd>
-            {paper.forumEdition && (
-              <>
-                <dt className="font-semibold text-navy">Forum edition</dt>
-                <dd>
-                  <WithPlaceholders text={paper.forumEdition} />
-                </dd>
-              </>
-            )}
-            {paper.note && (
-              <>
-                <dt className="font-semibold text-navy">Note</dt>
-                <dd>
-                  <WithPlaceholders text={paper.note} />
-                </dd>
-              </>
-            )}
+      <header className="page grid-12 gap-y-8 pb-12 pt-10 md:pt-16">
+        <nav aria-label="Breadcrumb" className="col-span-12 lg:col-span-2">
+          <Link href="/papers" className="inline-flex items-center gap-2 text-ui text-ink-soft hover:text-navy">
+            <Glyph name="arrowLeft" size={18} /> Working Papers
+          </Link>
+        </nav>
+        <div className="col-span-12 lg:col-span-7">
+          <ViewTransition name={`paper-number-${paper.paperNumber}`}>
+            <p className="flex items-baseline gap-4">
+              <span className="dateline">SREI Working Paper</span>
+              <span className="font-serif text-h1 leading-none text-gold-dark tnum">No.&nbsp;{paper.paperNumber}</span>
+            </p>
+          </ViewTransition>
+          <RevealLines as="h1" text={paper.title} className="mt-6 font-serif text-h2 text-navy md:text-[clamp(2rem,1.4rem+2vw,3.1rem)] md:leading-[1.1]" delay={100} />
+        </div>
+        <aside className="col-span-12 lg:col-span-3" aria-label="Paper details">
+          <div className="rule-strong load-draw" />
+          <dl className="divide-y divide-cream-300">
+            {meta.map(([k, v], i) => (
+              <div key={k} className="load-left py-3" style={{ "--d": `${200 + i * 80}ms` } as CSSProperties}>
+                <dt className="dateline">{k}</dt>
+                <dd className="mt-1 font-serif text-navy">{v}</dd>
+              </div>
+            ))}
           </dl>
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="load-in mt-5 flex flex-wrap gap-3" style={{ "--d": "500ms" } as CSSProperties}>
             {paper.pdfExists ? (
               <>
-                <Button href={paper.pdfPath} download>
-                  Download PDF
-                </Button>
-                <Button href={paper.pdfPath} variant="secondary" external>
-                  Open in new tab
-                </Button>
+                <a href={paper.pdfPath} download className="btn btn-primary min-h-11 px-5">
+                  <Glyph name="download" size={18} /> Download PDF
+                </a>
+                <a href={paper.pdfPath} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-2 px-2 text-ui text-navy hover:underline">
+                  <Glyph name="external" size={18} /> Open
+                </a>
               </>
             ) : (
-              <p className="rounded-sm border border-dashed border-gold px-4 py-2.5 text-sm text-ink/80">
+              <p className="border border-dashed border-gold px-4 py-2.5 text-sm text-ink-soft">
                 PDF coming soon <span className="placeholder">[add file at /public{paper.pdfPath}]</span>
               </p>
             )}
           </div>
-        </div>
+        </aside>
       </header>
 
-      <div className="mx-auto max-w-4xl space-y-12 px-5 py-12">
-        <section aria-labelledby="abstract">
-          <h2 id="abstract" className="section-title">
+      <div className="page grid-12 gap-y-16 pb-8">
+        <section aria-labelledby="abstract" className="col-span-12 lg:col-span-7 lg:col-start-3">
+          <h2 id="abstract" className="label">
             Abstract
           </h2>
-          <p className="mt-4 text-lg leading-relaxed">
+          <p className="mt-4 font-serif text-lead leading-relaxed text-ink onum" data-reveal="up">
             <WithPlaceholders text={paper.abstract} />
           </p>
           {paper.keywords.length > 0 && (
             <p className="mt-6 text-sm">
-              <span className="font-semibold text-navy">Keywords: </span>
-              {paper.keywords.join(", ")}
+              <span className="dateline mr-2">Keywords</span>
+              <span className="smcp text-ink-soft">{paper.keywords.join(" · ")}</span>
             </p>
           )}
         </section>
+        <div className="col-span-2 col-start-11 hidden self-start text-gold-dark lg:block">
+          <EmblemPapers className="w-full" />
+        </div>
 
-        {paper.body.trim() && <Mdx source={paper.body} />}
+        {paper.body.trim() && (
+          <div className="col-span-12 lg:col-span-7 lg:col-start-3">
+            <Mdx source={paper.body} variant="article" />
+          </div>
+        )}
 
         {paper.pdfExists && (
-          <section aria-labelledby="pdf-viewer">
-            <h2 id="pdf-viewer" className="section-title">
+          <section aria-labelledby="pdf-viewer" className="col-span-12 lg:col-span-10 lg:col-start-2">
+            <h2 id="pdf-viewer" className="label">
               Read the paper
             </h2>
-            <div className="mt-4 overflow-hidden rounded-sm border border-cream-300 bg-white">
-              <object data={`${paper.pdfPath}#view=FitH`} type="application/pdf" className="hidden h-[80vh] w-full md:block" aria-label={`PDF of ${paper.title}`}>
+            <div className="mt-4 overflow-hidden border border-cream-300 bg-white" data-reveal="wipe-up">
+              <object data={`${paper.pdfPath}#view=FitH`} type="application/pdf" className="hidden h-[85vh] w-full md:block" aria-label={`PDF of ${paper.title}`}>
                 <p className="p-6 text-sm">
                   Your browser can&rsquo;t display the PDF here.{" "}
-                  <a href={paper.pdfPath} className="underline">
+                  <a href={paper.pdfPath} className="link">
                     Download it instead
                   </a>
                   .
@@ -145,7 +145,7 @@ export default async function PaperPage({ params }: Props) {
               </object>
               <p className="p-6 text-sm md:hidden">
                 On a phone, the PDF reads best in your device&rsquo;s viewer.{" "}
-                <a href={paper.pdfPath} target="_blank" rel="noopener noreferrer" className="font-medium text-navy underline decoration-gold underline-offset-4">
+                <a href={paper.pdfPath} target="_blank" rel="noopener noreferrer" className="link font-medium">
                   Open the PDF
                 </a>
                 .
@@ -154,15 +154,18 @@ export default async function PaperPage({ params }: Props) {
           </section>
         )}
 
-        <section aria-labelledby="cite" className="rounded-sm border border-cream-300 bg-cream-50 p-6">
-          <h2 id="cite" className="font-serif text-xl text-navy">
-            Suggested citation
-          </h2>
-          <p className="mt-3 break-words font-serif text-[1.05rem] leading-relaxed">{citation}</p>
-          <div className="mt-4">
-            <CopyButton text={citation} />
-          </div>
-        </section>
+        <div className="col-span-12 lg:col-span-7 lg:col-start-3">
+          <CiteBox
+            slug={paper.slug}
+            paperNumber={paper.paperNumber}
+            formats={[
+              { key: "simple", label: "Suggested", text: `${citeSimple(paper)} ${absoluteUrl(`/papers/${paper.slug}`)}` },
+              { key: "apa", label: "APA", text: citeApa(paper) },
+              { key: "chicago", label: "Chicago", text: citeChicago(paper) },
+              { key: "bibtex", label: "BibTeX", text: citeBibtex(paper), mono: true },
+            ]}
+          />
+        </div>
       </div>
     </article>
   );

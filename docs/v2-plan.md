@@ -1,6 +1,12 @@
 # SREI website v2: plan
 
-Status: **draft, waiting for the owner's approval.** No code changes until approved.
+Status: **approved.** Phases 1–3 are built and merged. Phases 4–5 (accounts, registration, dashboard) wait for the owner's service accounts (§7).
+
+**Deviations from this plan, as built:**
+- The `motion` library isn't used: CSS transitions/animations plus a single IntersectionObserver do the same with less JavaScript. GSAP is used only for the desktop map scene (lazy-loaded).
+- Headline reveals rise word by word (a wave in reading order) in pure CSS, instead of JS-measured lines. This keeps the largest paint fast on phones.
+- The first-visit intro is CSS-only and runs on desktop only, so phones never wait for it.
+- Fonts: one variable Source Serif 4 (no optical-size axis, no italic) and Inter, Latin subset only, to stay within the speed budget. Add `latin-ext` when Uzbek-language pages are introduced.
 
 Scope: the brief in `srei-redesign-prompt.md` (editorial redesign, rich motion, accounts and sign-up, forum registration, owner dashboard, extras). This document says *how*, in what order, and what the owner must do.
 

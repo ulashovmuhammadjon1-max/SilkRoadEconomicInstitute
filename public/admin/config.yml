@@ -153,7 +153,8 @@ collections:
                 summary: "{{fields.label}}: {{fields.date}}"
                 fields:
                   - { label: Step, name: label, widget: string }
-                  - { label: Date, name: date, widget: string }
+                  - { label: Date (as shown), name: date, widget: string }
+                  - { label: Exact date (for the timeline marker), name: isoDate, widget: datetime, required: false, format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false }
               - label: Judging rubric
                 name: rubric
                 widget: list
@@ -164,6 +165,11 @@ collections:
                   - { label: What judges look for, name: description, widget: text }
               - { label: Awards, name: awards, widget: list, field: { label: Award, name: award, widget: string } }
               - { label: How to submit, name: howToSubmit, widget: text }
+              - { label: Submission deadline (exact), name: submissionDeadline, widget: datetime, required: false, format: "YYYY-MM-DDTHH:mm:ssZ", picker_utc: false, hint: "Shows a live countdown on the site. Leave empty to show 'Deadline: [date]'." }
+              - { label: Forum first day (exact), name: forumDateStart, widget: datetime, required: false, format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false }
+              - { label: Forum last day (exact), name: forumDateEnd, widget: datetime, required: false, format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false }
+              - { label: Where "Submit your research" goes, name: registrationMode, widget: select, options: [{ label: "Google Form", value: "google_form" }, { label: "On-site registration (needs accounts)", value: "site" }], default: "google_form" }
+              - { label: On-site registration open, name: registrationOpen, widget: boolean, default: false, hint: "Only used when the option above is 'On-site registration'." }
           - label: Past editions
             name: pastEditions
             widget: list

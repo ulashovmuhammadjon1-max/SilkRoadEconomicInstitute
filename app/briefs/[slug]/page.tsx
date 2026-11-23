@@ -1,12 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ViewTransition, type CSSProperties } from "react";
 import { Mdx } from "@/components/Mdx";
+import { ScrollProgress } from "@/components/motion/ScrollProgress";
+import { Glyph } from "@/components/ornaments/Glyph";
+import { RouteLine } from "@/components/ornaments/Ornaments";
 import { WithPlaceholders } from "@/components/Placeholder";
+import { ShareBar } from "@/components/ShareBar";
 import { getAdjacentBriefs, getAllBriefs, getBrief } from "@/lib/content";
 import { formatDate } from "@/lib/format";
-import { tagToSlug } from "@/lib/tags";
 import { absoluteUrl } from "@/lib/site";
+import { tagToSlug } from "@/lib/tags";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -42,30 +47,37 @@ export default async function BriefPage({ params }: Props) {
   if (!brief) notFound();
   const { older, newer } = getAdjacentBriefs(brief.slug);
   const url = absoluteUrl(`/briefs/${brief.slug}`);
-  const telegramShare = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(brief.title)}`;
+  const words = brief.body.split(/\s+/).filter(Boolean).length;
 
   return (
-    <article>
-      <header className="border-b border-cream-300 bg-cream-50">
-        <div className="mx-auto max-w-3xl px-5 py-12 md:py-16">
-          <nav aria-label="Breadcrumb" className="text-sm">
-            <Link href="/briefs" className="text-navy underline decoration-gold underline-offset-4">
-              Briefs
-            </Link>
-          </nav>
-          <h1 className="mt-6 font-serif text-3xl leading-tight text-navy md:text-5xl">
-            <WithPlaceholders text={brief.title} />
+    <article id="article">
+      <ScrollProgress targetId="article" />
+      <header className="page grid-12 gap-y-6 pb-10 pt-10 md:pt-16">
+        <nav aria-label="Breadcrumb" className="col-span-12 lg:col-span-2">
+          <Link href="/briefs" className="inline-flex items-center gap-2 text-ui text-ink-soft hover:text-navy">
+            <Glyph name="arrowLeft" size={18} /> Briefs
+          </Link>
+        </nav>
+        <div className="col-span-12 lg:col-span-8">
+          <p className="dateline load-fade flex flex-wrap items-center gap-x-3 gap-y-1">
+            <time dateTime={brief.date}>{formatDate(brief.date)}</time>
+            <span aria-hidden="true" className="text-gold">◆</span>
+            <span>{brief.author}</span>
+            <span aria-hidden="true" className="text-gold">◆</span>
+            <span>{Math.max(1, Math.round(words / 220))} min read</span>
+          </p>
+          <h1 className="mt-5 font-serif text-h1 text-navy">
+            <ViewTransition name={`brief-title-${brief.slug}`}>
+              <span>
+                <WithPlaceholders text={brief.title} />
+              </span>
+            </ViewTransition>
           </h1>
-          <p className="mt-4 text-lg leading-relaxed text-ink/80">
+          <p className="load-in mt-6 max-w-measure text-lead text-ink-soft" style={{ "--d": "200ms" } as CSSProperties}>
             <WithPlaceholders text={brief.summary} />
           </p>
-          <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-ink/80">
-            <span>{brief.author}</span>
-            <span aria-hidden="true">·</span>
-            <time dateTime={brief.date}>{formatDate(brief.date)}</time>
-          </div>
           {brief.tags.length > 0 && (
-            <ul className="mt-4 flex flex-wrap gap-2" aria-label="Tags">
+            <ul className="mt-6 flex flex-wrap gap-2" aria-label="Tags">
               {brief.tags.map((t) => (
                 <li key={t}>
                   <Link href={`/briefs/tag/${tagToSlug(t)}`} className="tag">
@@ -78,51 +90,61 @@ export default async function BriefPage({ params }: Props) {
         </div>
       </header>
 
-      <div className="mx-auto max-w-3xl px-5 py-10 md:py-12">
-        {brief.coverImage && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={brief.coverImage} alt={brief.coverAlt ?? ""} className="mb-10 w-full rounded-sm border border-cream-300" />
-        )}
-
-        <Mdx source={brief.body} />
-
-        <div className="mt-12 flex flex-wrap items-center gap-4 border-t border-cream-300 pt-8">
-          <a
-            href={telegramShare}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex min-h-11 items-center gap-2 rounded-sm bg-navy px-5 text-sm font-medium text-cream hover:bg-navy-700"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M21.9 4.3 18.7 19.4c-.2 1-.9 1.3-1.7.8l-4.8-3.6-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.5 13.1 1.8 11.6c-1-.3-1-1 .2-1.5L20.6 3c.8-.3 1.6.2 1.3 1.3Z" />
-            </svg>
-            Share to Telegram
-          </a>
+      {brief.coverImage && (
+        <div className="page">
+          <div className="overflow-hidden" data-reveal="wipe">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={brief.coverImage} alt={brief.coverAlt ?? ""} className="settle aspect-[1200/630] w-full object-cover" />
+          </div>
         </div>
+      )}
 
-        {(older || newer) && (
-          <nav aria-label="More briefs" className="mt-10 grid gap-4 sm:grid-cols-2">
-            {older ? (
-              <Link href={`/briefs/${older.slug}`} className="rounded-sm border border-cream-300 bg-cream-50 p-5 hover:border-gold">
-                <span className="text-xs uppercase tracking-[0.14em] text-gold-dark">← Previous brief</span>
-                <span className="mt-2 block font-serif text-lg text-navy">
-                  <WithPlaceholders text={older.title} />
-                </span>
-              </Link>
-            ) : (
-              <span />
-            )}
-            {newer && (
-              <Link href={`/briefs/${newer.slug}`} className="rounded-sm border border-cream-300 bg-cream-50 p-5 text-right hover:border-gold">
-                <span className="text-xs uppercase tracking-[0.14em] text-gold-dark">Next brief →</span>
-                <span className="mt-2 block font-serif text-lg text-navy">
-                  <WithPlaceholders text={newer.title} />
-                </span>
-              </Link>
-            )}
-          </nav>
-        )}
+      <div className="page grid-12 pt-12 md:pt-16">
+        <div className="col-span-12 lg:col-span-7 lg:col-start-3 xl:col-span-6 xl:col-start-3">
+          <Mdx source={brief.body} variant="article" />
+
+          <div className="mt-16 border-t border-cream-300 pt-8">
+            <ShareBar url={url} title={brief.title} />
+          </div>
+        </div>
       </div>
+
+      <div className="page mt-20" aria-hidden="true">
+        <RouteLine className="h-6 w-full" />
+      </div>
+
+      {(older || newer) && (
+        <nav aria-label="More briefs" className="page mt-6 grid gap-6 sm:grid-cols-2">
+          {older ? (
+            <Link href={`/briefs/${older.slug}`} className="group border-t-2 border-navy pt-5">
+              <span className="dateline inline-flex items-center gap-2">
+                <Glyph name="arrowLeft" size={16} className="transition-transform duration-500 group-hover:-translate-x-1" /> Previous brief
+              </span>
+              <span className="mt-3 block font-serif text-h3 text-navy">
+                <WithPlaceholders text={older.title} />
+              </span>
+              <span className="mt-2 block max-h-0 overflow-hidden text-ink-soft opacity-0 transition-all duration-500 group-hover:max-h-24 group-hover:opacity-100 group-focus-visible:max-h-24 group-focus-visible:opacity-100">
+                <WithPlaceholders text={older.summary} />
+              </span>
+            </Link>
+          ) : (
+            <span />
+          )}
+          {newer && (
+            <Link href={`/briefs/${newer.slug}`} className="group border-t-2 border-navy pt-5 text-right">
+              <span className="dateline inline-flex items-center gap-2">
+                Next brief <Glyph name="arrow" size={16} className="transition-transform duration-500 group-hover:translate-x-1" />
+              </span>
+              <span className="mt-3 block font-serif text-h3 text-navy">
+                <WithPlaceholders text={newer.title} />
+              </span>
+              <span className="mt-2 block max-h-0 overflow-hidden text-ink-soft opacity-0 transition-all duration-500 group-hover:max-h-24 group-hover:opacity-100 group-focus-visible:max-h-24 group-focus-visible:opacity-100">
+                <WithPlaceholders text={newer.summary} />
+              </span>
+            </Link>
+          )}
+        </nav>
+      )}
     </article>
   );
 }

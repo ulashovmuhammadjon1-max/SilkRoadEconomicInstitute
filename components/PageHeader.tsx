@@ -1,12 +1,40 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
+import { RevealLines } from "./motion/RevealLines";
+import { RouteLine } from "./ornaments/Ornaments";
 
-export function PageHeader({ eyebrow, title, children }: { eyebrow?: string; title: string; children?: ReactNode }) {
+/** Editorial page opener: section mark, line-revealed title, optional lead and aside. */
+export function PageHeader({
+  section,
+  eyebrow,
+  title,
+  children,
+  aside,
+}: {
+  section?: string;
+  eyebrow?: string;
+  title: string;
+  children?: ReactNode;
+  aside?: ReactNode;
+}) {
   return (
-    <header className="border-b border-cream-300 bg-cream-50">
-      <div className="mx-auto max-w-6xl px-5 py-12 md:py-16">
-        {eyebrow && <p className="eyebrow">{eyebrow}</p>}
-        <h1 className="mt-2 max-w-3xl font-serif text-3xl leading-tight text-navy md:text-5xl">{title}</h1>
-        {children && <div className="mt-4 max-w-2xl text-lg leading-relaxed text-ink/80">{children}</div>}
+    <header className="relative">
+      <div className="page grid-12 gap-y-6 pb-12 pt-12 md:pt-20 lg:pb-16">
+        <p className="label load-fade col-span-12 lg:col-span-2 lg:pt-4">
+          {section && <span className="mr-2">§ {section}</span>}
+          {eyebrow}
+        </p>
+        <div className="col-span-12 lg:col-span-7">
+          <RevealLines as="h1" text={title} className="max-w-[18ch] font-serif text-h1 text-navy" delay={80} />
+          {children && (
+            <div className="load-in mt-6 max-w-measure text-lead text-ink-soft" style={{ "--d": "400ms" } as CSSProperties}>
+              {children}
+            </div>
+          )}
+        </div>
+        {aside && <div className="col-span-12 lg:col-span-3 lg:self-end">{aside}</div>}
+      </div>
+      <div className="page" aria-hidden="true">
+        <RouteLine className="h-6 w-full" delay={300} />
       </div>
     </header>
   );

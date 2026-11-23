@@ -11,12 +11,13 @@ export const metadata: Metadata = {
 };
 
 export default function BriefsPage() {
+  const all = getAllBriefs();
   return (
     <>
-      <PageHeader eyebrow="Weekly briefs" title="Briefs">
-        One chart and about 250 words on remittances, exchange rates and labor migration in Central Asia.
+      <PageHeader section="04" eyebrow="Weekly briefs" title="One chart, two hundred and fifty words">
+        Short, data-driven notes on remittances, exchange rates and labor migration in Central Asia.
       </PageHeader>
-      <BriefList briefs={getAllBriefs()} />
+      <BriefList briefs={all} all={all} />
     </>
   );
 }

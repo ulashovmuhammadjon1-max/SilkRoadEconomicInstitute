@@ -27,11 +27,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function TagPage({ params }: Props) {
   const tag = slugToTag((await params).tag);
   if (!tag) notFound();
-  const briefs = getAllBriefs().filter((b) => b.tags.some((t) => tagToSlug(t) === tagToSlug(tag)));
+  const all = getAllBriefs();
+  const briefs = all.filter((b) => b.tags.some((t) => tagToSlug(t) === tagToSlug(tag)));
   return (
     <>
-      <PageHeader eyebrow="Weekly briefs" title={`Briefs on ${tag}`} />
-      <BriefList briefs={briefs} activeTag={tag} />
+      <PageHeader section="04" eyebrow="Weekly briefs" title={`Briefs on ${tag}`} />
+      <BriefList briefs={briefs} all={all} activeTag={tag} />
     </>
   );
 }
