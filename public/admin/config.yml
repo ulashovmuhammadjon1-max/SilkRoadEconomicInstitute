@@ -1,0 +1,186 @@
+# Content editor for silkroadecon.asia (Decap CMS).
+# Open https://silkroadecon.asia/admin and log in with GitHub.
+# Every "Publish" saves a commit to GitHub; Vercel then rebuilds the site (about 1 minute).
+
+backend:
+  name: github
+  repo: ulashovmuhammadjon1-max/SilkRoadEconomicInstitute
+  branch: main
+  base_url: https://silkroadecon.asia
+  auth_endpoint: api/auth
+  commit_messages:
+    create: "Add {{collection}} “{{slug}}”"
+    update: "Update {{collection}} “{{slug}}”"
+    delete: "Delete {{collection}} “{{slug}}”"
+    uploadMedia: "Upload “{{path}}”"
+    deleteMedia: "Delete “{{path}}”"
+
+# For editing on your own computer: run `npx decap-server` next to `npm run dev`.
+local_backend: true
+
+site_url: https://silkroadecon.asia
+display_url: https://silkroadecon.asia
+logo_url: /logo.png
+
+# Default upload folder (images inside briefs, photos, etc.)
+media_folder: public/uploads
+public_folder: /uploads
+
+collections:
+  - name: briefs
+    label: Weekly Briefs
+    label_singular: Brief
+    description: "Short data briefs: one chart and about 250 words."
+    folder: content/briefs
+    extension: mdx
+    format: frontmatter
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    preview_path: "briefs/{{slug}}"
+    sortable_fields: [date, title]
+    summary: "{{date}} · {{title}}"
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Date, name: date, widget: datetime, format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false, picker_utc: true }
+      - { label: Author, name: author, widget: string }
+      - { label: Summary, name: summary, widget: text, hint: "One or two sentences. Shown on the list page and in Telegram/Instagram link previews." }
+      - label: Tags
+        name: tags
+        widget: select
+        multiple: true
+        options: ["Remittances", "Exchange Rates", "Labor Migration", "Policy"]
+      - { label: Cover image, name: coverImage, widget: image, required: false, media_folder: /public/briefs, public_folder: /briefs, choose_url: false }
+      - { label: Cover image description (for screen readers), name: coverAlt, widget: string, required: false }
+      - label: Text
+        name: body
+        widget: markdown
+        modes: [rich_text, raw]
+        hint: "Add your chart with the Image button. Put the chart title and source in a line of italics underneath."
+
+  - name: papers
+    label: Working Papers
+    label_singular: Working Paper
+    folder: content/papers
+    extension: mdx
+    format: frontmatter
+    create: true
+    slug: "srei-wp-{{fields.paperNumber}}"
+    identifier_field: title
+    preview_path: "papers/{{slug}}"
+    sortable_fields: [paperNumber, title]
+    summary: "No. {{paperNumber}} · {{title}}"
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Working Paper number, name: paperNumber, widget: number, value_type: int, min: 0, hint: "Must be unique. The next paper after No. 0 is No. 1." }
+      - label: Authors
+        name: authors
+        widget: list
+        field: { label: Name, name: name, widget: string }
+      - { label: Date, name: date, widget: string, hint: "e.g. 2026-12-20, or just a year like 2026" }
+      - { label: Abstract, name: abstract, widget: text }
+      - { label: PDF file, name: pdfPath, widget: file, media_folder: /public/papers, public_folder: /papers, choose_url: false, hint: "Upload the PDF. Keep the file name simple, e.g. srei-wp-001.pdf" }
+      - { label: Keywords, name: keywords, widget: list, required: false, hint: "Separate with commas" }
+      - { label: Forum edition, name: forumEdition, widget: string, required: false, hint: "e.g. Winter 2026 Research Forum. Leave empty if not from a forum." }
+      - { label: Note, name: note, widget: string, required: false, hint: "e.g. Originally published in TIJER (2026)." }
+      - { label: Extra text (optional), name: body, widget: markdown, required: false }
+
+  - name: settings
+    label: Settings & Pages
+    editor: { preview: false }
+    files:
+      - name: site
+        label: Contact links & About text
+        file: content/site.json
+        fields:
+          - { label: Contact email, name: email, widget: string }
+          - { label: Telegram link, name: telegramUrl, widget: string }
+          - { label: Telegram handle, name: telegramHandle, widget: string }
+          - { label: Instagram handle, name: instagramHandle, widget: string, hint: "e.g. @srei.asia" }
+          - { label: Instagram link, name: instagramUrl, widget: string, hint: "e.g. https://www.instagram.com/srei.asia/" }
+          - { label: Submission form link (Google Form), name: submissionFormUrl, widget: string }
+          - { label: Founder's story (About page), name: founderStory, widget: text }
+
+      - name: team
+        label: Team
+        file: content/team.json
+        fields:
+          - label: Team members
+            name: members
+            widget: list
+            summary: "{{fields.name}} · {{fields.role}}"
+            fields: &person
+              - { label: Name, name: name, widget: string }
+              - { label: Role, name: role, widget: string }
+              - { label: Affiliation, name: affiliation, widget: string, required: false }
+              - { label: Short bio, name: bio, widget: text, required: false }
+              - { label: Photo, name: photo, widget: image, required: false, media_folder: /public/team, public_folder: /team, choose_url: false }
+              - label: Links
+                name: links
+                widget: list
+                required: false
+                fields:
+                  - { label: Label, name: label, widget: string }
+                  - { label: URL, name: url, widget: string }
+
+      - name: judges
+        label: Judges & Advisors
+        file: content/judges.json
+        fields:
+          - label: Judges & advisors
+            name: judges
+            widget: list
+            hint: "This section stays hidden on the About page while the list is empty."
+            summary: "{{fields.name}} · {{fields.role}}"
+            fields: *person
+
+      - name: forum
+        label: Forum
+        file: content/forum.json
+        fields:
+          - label: Current edition
+            name: current
+            widget: object
+            fields:
+              - { label: Name, name: name, widget: string }
+              - { label: Status, name: status, widget: select, options: ["upcoming", "open", "closed"], hint: "'closed' hides the forum banner on the home page." }
+              - { label: Dates, name: dates, widget: string }
+              - { label: Format, name: format, widget: text }
+              - { label: Who can apply, name: eligibility, widget: text }
+              - { label: Themes, name: themes, widget: list, field: { label: Theme, name: theme, widget: string } }
+              - label: Timeline
+                name: timeline
+                widget: list
+                summary: "{{fields.label}}: {{fields.date}}"
+                fields:
+                  - { label: Step, name: label, widget: string }
+                  - { label: Date, name: date, widget: string }
+              - label: Judging rubric
+                name: rubric
+                widget: list
+                summary: "{{fields.criterion}} ({{fields.points}})"
+                fields:
+                  - { label: Criterion, name: criterion, widget: string }
+                  - { label: Points, name: points, widget: number, value_type: int }
+                  - { label: What judges look for, name: description, widget: text }
+              - { label: Awards, name: awards, widget: list, field: { label: Award, name: award, widget: string } }
+              - { label: How to submit, name: howToSubmit, widget: text }
+          - label: Past editions
+            name: pastEditions
+            widget: list
+            required: false
+            summary: "{{fields.name}}"
+            fields:
+              - { label: Name, name: name, widget: string }
+              - { label: Dates, name: dates, widget: string }
+              - { label: Summary, name: summary, widget: text, required: false }
+              - label: Winners
+                name: winners
+                widget: list
+                required: false
+                fields:
+                  - { label: Place, name: place, widget: string, hint: "e.g. 1st place" }
+                  - { label: Name, name: name, widget: string }
+                  - { label: Paper title, name: title, widget: string }
+                  - { label: Working paper page (slug), name: paperSlug, widget: string, required: false, hint: "e.g. srei-wp-001" }
+              - { label: Recording link, name: recordingUrl, widget: string, required: false }
+              - { label: Results link, name: resultsUrl, widget: string, required: false }

@@ -10,22 +10,54 @@ npm run dev        # http://localhost:3000
 npm run build      # the same build Vercel runs; fails with a clear message if a content file is wrong
 ```
 
-## Add a new brief (one file)
+## Editing the site: the admin page (no code)
 
-1. Copy `content/briefs/_template.mdx` to a new file, e.g. `content/briefs/2026-12-05-som-exchange-rate.mdx`. The file name becomes the URL: `/briefs/2026-12-05-som-exchange-rate`.
-2. Fill in the frontmatter (`title`, `date`, `author`, `summary`, `tags`, optional `coverImage`) and write the text in Markdown.
-3. Images and charts go in `public/briefs/`. Reference them as `/briefs/file.png`, either with Markdown (`![alt text](/briefs/file.png)`) or the `<Chart />` component for a caption and source line.
-4. Commit and push. Vercel rebuilds and the brief is live in about a minute, on the home page, `/briefs`, its tag pages and the sitemap.
+Go to **https://silkroadecon.asia/admin** and click **Login with GitHub**. You can:
 
-Tags with filter pages: `Remittances`, `Exchange Rates`, `Labor Migration`, `Policy` (edit `lib/tags.ts` to add one).
+- **Weekly Briefs**: write a brief, upload the cover image and chart, pick tags.
+- **Working Papers**: fill in title, number, authors and abstract, then upload the PDF.
+- **Settings & Pages**:
+  - Contact links & About text (email, Instagram, Google Form link, founder's story)
+  - Team (names, roles, bios, photos)
+  - Judges & Advisors (hidden on the site while empty)
+  - Forum (dates, timeline, themes, rubric, awards, past editions)
 
-## Add a new working paper (one file + the PDF)
+Clicking **Publish** saves a commit to GitHub. Vercel rebuilds the site and the change is live in about a minute. Anything still written in `[square brackets]` shows on the site with a gold dashed highlight, so unfinished text is easy to spot.
 
-1. Put the PDF in `public/papers/`, e.g. `public/papers/srei-wp-001.pdf`.
-2. Copy `content/papers/_template.mdx` to `content/papers/srei-wp-001.mdx` and fill in the fields. `paperNumber` must be unique.
-3. Commit and push. The paper page gets the PDF viewer, download button, citation and Google Scholar meta tags. If the PDF file is missing, the page shows "PDF coming soon" instead of a broken link.
+When the Winter 2026 forum is over, set the forum **Status** to `closed` (this hides the home-page banner) and add an entry under **Past editions**.
 
-Example (`content/papers/srei-wp-001.mdx`):
+### One-time setup: admin login (about 5 minutes)
+
+The admin page needs a GitHub "OAuth App" so it can log you in.
+
+1. On GitHub, go to **Settings → Developer settings → OAuth Apps → New OAuth App** (direct link: https://github.com/settings/applications/new) and fill in:
+   - Application name: `SREI admin`
+   - Homepage URL: `https://silkroadecon.asia`
+   - Authorization callback URL: `https://silkroadecon.asia/api/callback`
+2. Click **Register application**, then **Generate a new client secret**. Copy the **Client ID** and the **Client secret**.
+3. In Vercel, go to Project → **Settings → Environment Variables** and add both:
+   - `GITHUB_CLIENT_ID` = the Client ID
+   - `GITHUB_CLIENT_SECRET` = the Client secret
+4. Go to **Deployments → ⋯ → Redeploy**. Then open https://silkroadecon.asia/admin and log in.
+
+Only people with write access to the GitHub repository can save changes. To add an editor, invite them under GitHub repository → **Settings → Collaborators**. The admin login only works on `silkroadecon.asia`, so connect the domain first.
+
+## Editing files directly (alternative)
+
+Everything the admin page edits is a plain file, so you can also edit files on GitHub (open the file, click the pencil, commit) or locally.
+
+| What | File |
+| --- | --- |
+| Briefs | `content/briefs/*.mdx`; images in `public/briefs/` |
+| Working papers | `content/papers/*.mdx`; PDFs in `public/papers/` |
+| Email, Instagram, Google Form, founder's story | `content/site.json` |
+| Team / judges | `content/team.json`, `content/judges.json` |
+| Forum | `content/forum.json` |
+| Logo and favicon | `public/logo.png` (square PNG, at least 512×512; replace the placeholder) |
+
+To add a brief or paper by hand, copy `templates/brief.mdx` or `templates/paper.mdx` into `content/briefs/` or `content/papers/`, rename it, fill it in, and push. The file name becomes the URL. If a required field is missing, or two papers share a number, the build fails with a message naming the file, and the live site keeps its previous version.
+
+Example paper (`content/papers/srei-wp-001.mdx`, with the PDF at `public/papers/srei-wp-001.pdf`):
 
 ```mdx
 ---
@@ -40,48 +72,12 @@ forumEdition: "Winter 2026 Research Forum"
 ---
 ```
 
-Commands to publish it:
-
-```bash
-git add content/papers/srei-wp-001.mdx public/papers/srei-wp-001.pdf
-git commit -m "Add Working Paper No. 1"
-git push
-```
-
-## Other content you can edit
-
-| What | File |
-| --- | --- |
-| Email, Instagram, Google Form link | `lib/site.ts` |
-| Forum dates, timeline, themes, rubric, awards, past editions | `content/forum.json` |
-| Team members | `content/team.json` |
-| Judges & advisors (section hidden while empty) | `content/judges.json` |
-| Founder's story | `app/about/page.tsx` |
-| Logo and favicon | `public/logo.png` (square PNG, at least 512×512; replace the placeholder) |
-
-Person format for `team.json` / `judges.json`:
-
-```json
-{ "name": "Full Name", "role": "Judge", "affiliation": "University", "bio": "One sentence.", "photo": "/team/name.jpg" }
-```
-
-Anything still written in `[square brackets]` shows on the site with a gold dashed highlight, so unfinished text is easy to spot. Search the repo for `[` before launch.
-
-When the Winter 2026 forum is over, set `"status": "closed"` in `content/forum.json` (this hides the home-page banner) and add an entry to `pastEditions`.
+In a brief you can show a chart with Markdown, `![description](/briefs/chart.png)`, or with the `<Chart src="..." alt="..." caption="..." source="..." />` component, which adds a caption and source line.
 
 ## Deploy
 
-### 1. Push to GitHub
-Create an empty repository on github.com (no README), then from this folder:
-
-```bash
-git init
-git add .
-git commit -m "Initial site"
-git branch -M main
-git remote add origin https://github.com/<your-username>/silkroadecon.git
-git push -u origin main
-```
+### 1. GitHub
+The code lives at https://github.com/ulashovmuhammadjon1-max/SilkRoadEconomicInstitute (branch `main`).
 
 ### 2. Import into Vercel
 vercel.com → **Add New… → Project** → pick the repository → framework preset **Next.js** (detected automatically) → **Deploy**. No environment variables are needed.
@@ -92,5 +88,8 @@ Project → **Settings → Domains** → add `silkroadecon.asia`, and also `www.
 ### 4. Turn on Web Analytics
 Project → **Analytics** tab → **Enable**, then redeploy once (Deployments → ⋯ → Redeploy). The `<Analytics />` component is already in `app/layout.tsx`. Page views per URL (e.g. `/briefs/...`, `/papers/...`) appear under **Analytics → Pages**. PDF downloads are files, not pages, so they are not counted separately.
 
-### 5. Publishing later
-Every `git push` to `main` deploys to production. Pushes to other branches get preview URLs.
+### 5. Admin login
+Follow "One-time setup: admin login" above.
+
+### 6. Publishing later
+Every save in /admin, and every push to `main`, deploys to production.

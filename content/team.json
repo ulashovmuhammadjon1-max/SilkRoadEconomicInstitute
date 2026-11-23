@@ -1,8 +1,10 @@
-[
-  {
-    "name": "Muhammadjon Ulashov",
-    "role": "Founder & Director",
-    "bio": "[Short bio: student researcher from Tashkent; published research on currency depreciation and household consumption in remittance-based Uzbekistan vs resource-based Kazakhstan (TIJER, 2026).]",
-    "photo": ""
-  }
-]
+{
+  "members": [
+    {
+      "name": "Muhammadjon Ulashov",
+      "role": "Founder & Director",
+      "bio": "[Short bio: student researcher from Tashkent; published research on currency depreciation and household consumption in remittance-based Uzbekistan vs resource-based Kazakhstan (TIJER, 2026).]",
+      "photo": ""
+    }
+  ]
+}

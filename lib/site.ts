@@ -1,7 +1,9 @@
+import settings from "@/content/site.json";
+
 /**
- * Site-wide settings. Edit the values in square brackets once you have them.
- * Any value that still starts with "[" is shown on the site as a visible
- * placeholder instead of a broken link.
+ * Site-wide settings. The editable values (email, links, founder's story) live
+ * in content/site.json, so they can be changed from /admin. Any value that
+ * still starts with "[" is shown as a visible placeholder, not a broken link.
  */
 export const site = {
   name: "Silk Road Economic Institute",
@@ -9,15 +11,14 @@ export const site = {
   tagline: "Youth-led research on how migration shapes Central Asia's economy.",
   url: "https://silkroadecon.asia",
   locale: "en_US",
-
-  email: "[email]",
-  telegramUrl: "https://t.me/silkroad_economicinstitute",
-  telegramHandle: "@silkroad_economicinstitute",
-  instagramHandle: "[@handle]",
-  // e.g. "https://www.instagram.com/yourhandle/"
-  instagramUrl: "[Instagram URL]",
-  submissionFormUrl: "[Google Form URL]",
-} as const;
+  email: settings.email,
+  telegramUrl: settings.telegramUrl,
+  telegramHandle: settings.telegramHandle,
+  instagramHandle: settings.instagramHandle,
+  instagramUrl: settings.instagramUrl,
+  submissionFormUrl: settings.submissionFormUrl,
+  founderStory: settings.founderStory,
+};
 
 export const nav = [
   { href: "/papers", label: "Working Papers" },
@@ -27,7 +28,7 @@ export const nav = [
   { href: "/contact", label: "Contact" },
 ] as const;
 
-/** True for values that are still "[placeholders]". */
+/** True for values that are still "[placeholders]" or empty. */
 export function isPlaceholder(value: string | undefined | null): boolean {
   return !value || value.trim().startsWith("[");
 }

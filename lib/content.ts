@@ -189,12 +189,19 @@ function readJson<T>(file: string, fallback: T): T {
   }
 }
 
+/** Accepts either a plain array or { "<key>": [...] } (the shape /admin saves). */
+function readPeople(file: string, key: string): Person[] {
+  const data = readJson<Person[] | Record<string, Person[]>>(file, []);
+  const list = Array.isArray(data) ? data : (data[key] ?? []);
+  return list.filter((p) => p && p.name);
+}
+
 export function getTeam(): Person[] {
-  return readJson<Person[]>("team.json", []).filter((p) => p && p.name);
+  return readPeople("team.json", "members");
 }
 
 export function getJudges(): Person[] {
-  return readJson<Person[]>("judges.json", []).filter((p) => p && p.name);
+  return readPeople("judges.json", "judges");
 }
 
 export type TimelineItem = { label: string; date: string };

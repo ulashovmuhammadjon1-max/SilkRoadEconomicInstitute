@@ -3,6 +3,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { PersonCard } from "@/components/PersonCard";
 import { WithPlaceholders } from "@/components/Placeholder";
 import { getJudges, getTeam } from "@/lib/content";
+import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About",
@@ -11,8 +12,6 @@ export const metadata: Metadata = {
   openGraph: { url: "/about" },
 };
 
-const founderStory =
-  "[Founder's story in 3–4 sentences: growing up around families supported by remittances; researching how exchange rates affect them]";
 
 export default function AboutPage() {
   const team = getTeam();
@@ -41,14 +40,16 @@ export default function AboutPage() {
           </div>
         </section>
 
+        {site.founderStory.trim() && (
         <section aria-labelledby="story">
           <h2 id="story" className="section-title">
             Why we started
           </h2>
           <p className="mt-4 text-lg leading-relaxed text-ink/85">
-            <WithPlaceholders text={founderStory} />
+            <WithPlaceholders text={site.founderStory} />
           </p>
         </section>
+        )}
 
         {team.length > 0 && (
           <section aria-labelledby="team">
