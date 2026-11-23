@@ -48,7 +48,7 @@ collections:
         name: tags
         widget: select
         multiple: true
-        options: ["Remittances", "Exchange Rates", "Labor Migration", "Policy"]
+        options: ["Remittances", "Exchange Rates", "Labor Migration", "Household Economics", "Policy"]
       - { label: Cover image, name: coverImage, widget: image, required: false, media_folder: /public/briefs, public_folder: /briefs, choose_url: false }
       - { label: Cover image description (for screen readers), name: coverAlt, widget: string, required: false }
       - label: Text
@@ -82,6 +82,22 @@ collections:
       - { label: Keywords, name: keywords, widget: list, required: false, hint: "Separate with commas" }
       - { label: Forum edition, name: forumEdition, widget: string, required: false, hint: "e.g. Winter 2026 Research Forum. Leave empty if not from a forum." }
       - { label: Note, name: note, widget: string, required: false, hint: "e.g. Originally published in TIJER (2026)." }
+      - { label: Original publication, name: originalPublication, widget: string, required: false, hint: "e.g. TIJER, 2026" }
+      - { label: Link to original publication, name: originalUrl, widget: string, required: false, hint: "Leave empty to hide the button." }
+      - { label: Research period, name: researchPeriod, widget: string, required: false, hint: "e.g. 2018–2026 (quarterly data)" }
+      - label: Key findings
+        name: findings
+        widget: list
+        required: false
+        hint: "Only results reported in the paper."
+        fields:
+          - { label: Country or group, name: country, widget: string }
+          - label: Rows
+            name: rows
+            widget: list
+            fields:
+              - { label: Label, name: label, widget: string }
+              - { label: Value, name: value, widget: string }
       - { label: Extra text (optional), name: body, widget: markdown, required: false }
 
   - name: settings
@@ -113,6 +129,7 @@ collections:
               - { label: Role, name: role, widget: string }
               - { label: Affiliation, name: affiliation, widget: string, required: false }
               - { label: Short bio, name: bio, widget: text, required: false }
+              - { label: Research interests, name: interests, widget: list, required: false }
               - { label: Photo, name: photo, widget: image, required: false, media_folder: /public/team, public_folder: /team, choose_url: false }
               - label: Links
                 name: links
@@ -142,10 +159,20 @@ collections:
             widget: object
             fields:
               - { label: Name, name: name, widget: string }
+              - { label: Edition label, name: edition, widget: string, required: false, hint: "e.g. First edition" }
+              - { label: Season, name: season, widget: string, required: false, hint: "e.g. Winter 2026" }
+              - { label: Short theme tags (home page), name: tags, widget: list, required: false }
               - { label: Status, name: status, widget: select, options: ["upcoming", "open", "closed"], hint: "'closed' hides the forum banner on the home page." }
               - { label: Dates, name: dates, widget: string }
               - { label: Format, name: format, widget: text }
               - { label: Who can apply, name: eligibility, widget: text }
+              - label: How to apply (steps)
+                name: steps
+                widget: list
+                required: false
+                fields:
+                  - { label: Step, name: title, widget: string }
+                  - { label: Explanation, name: text, widget: text }
               - { label: Themes, name: themes, widget: list, field: { label: Theme, name: theme, widget: string } }
               - label: Timeline
                 name: timeline

@@ -4,7 +4,7 @@
  */
 export const dictionaries = {
   en: {
-    nav: { papers: "Working Papers", briefs: "Briefs", forum: "Forum", about: "About", contact: "Contact" },
+    nav: { papers: "Working Papers", briefs: "Weekly Briefs", forum: "Research Forum", about: "About", contact: "Contact" },
     search: { open: "Search", placeholder: "Search briefs and working papers" },
     share: { telegram: "Share to Telegram", copyLink: "Copy link", copied: "Copied" },
   },

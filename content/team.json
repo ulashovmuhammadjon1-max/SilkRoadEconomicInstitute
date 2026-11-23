@@ -2,9 +2,17 @@
   "members": [
     {
       "name": "Muhammadjon Ulashov",
-      "role": "Founder & Director",
-      "bio": "[Short bio: student researcher from Tashkent; published research on currency depreciation and household consumption in remittance-based Uzbekistan vs resource-based Kazakhstan (TIJER, 2026).]",
-      "photo": ""
+      "role": "Founder & Forum Director",
+      "bio": "High school senior in Tashkent researching migration economics, remittances, exchange rates and household consumption in Central Asia. Author of “Currency Depreciation and Household Consumption” (TIJER, 2026).",
+      "photo": "",
+      "affiliation": "Thompson International School, Tashkent, Uzbekistan",
+      "interests": [
+        "Migration economics",
+        "Remittances",
+        "Exchange rates",
+        "Household consumption",
+        "Central Asian economic development"
+      ]
     }
   ]
 }

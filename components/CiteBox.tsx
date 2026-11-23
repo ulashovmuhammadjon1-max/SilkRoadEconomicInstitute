@@ -38,11 +38,11 @@ export function CiteBox({ formats, slug, paperNumber }: { formats: Format[]; slu
           ))}
         </div>
       </div>
-      <div id="cite-panel" role="tabpanel" aria-labelledby={`tab-${f.key}`} className="mt-5 bg-cream-50 p-5" tabIndex={0}>
+      <div id="cite-panel" role="tabpanel" aria-labelledby={`tab-${f.key}`} className="mt-5 rounded-2xl bg-cream-50 p-5" tabIndex={0}>
         {f.mono ? (
           <pre className="overflow-x-auto whitespace-pre-wrap break-words font-mono text-[0.8rem] leading-relaxed text-ink">{f.text}</pre>
         ) : (
-          <p className="break-words font-serif text-[1.05rem] leading-relaxed">{f.text}</p>
+          <p className="break-words text-[1rem] leading-relaxed">{f.text}</p>
         )}
       </div>
       <div className="mt-4 flex flex-wrap gap-3">

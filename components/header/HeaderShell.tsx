@@ -30,7 +30,7 @@ export function HeaderShell({ children }: { children: ReactNode }) {
       data-site-header=""
       data-scrolled="false"
       data-hidden="false"
-      className="sticky top-0 z-40 border-b border-transparent bg-cream/95 backdrop-blur-[2px] transition-[transform,border-color] duration-500 ease-out data-[hidden=true]:-translate-y-full data-[scrolled=true]:border-cream-300 motion-reduce:transition-none"
+      className="on-dark sticky top-0 z-40 border-b border-white/0 bg-midnight/95 text-cream backdrop-blur-md transition-[transform,border-color] duration-500 ease-out data-[hidden=true]:-translate-y-full data-[scrolled=true]:border-white/10 motion-reduce:transition-none"
     >
       {children}
     </header>

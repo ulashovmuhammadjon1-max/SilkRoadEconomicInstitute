@@ -1,16 +1,17 @@
 {
   "current": {
     "name": "Winter 2026 Research Forum",
-    "status": "open",
-    "dates": "December [12–13 or 13–14], 2026",
-    "format": "Online. Finalists present live to a panel of economics professors, followed by Q&A.",
-    "eligibility": "High school and university students from any country. Individual and team submissions welcome.",
+    "status": "upcoming",
+    "dates": "December 12–14, 2026",
+    "format": "Online (Zoom or Google Meet). Selected finalists present to economics professors and answer questions.",
+    "eligibility": "High school and university students from any country.",
     "themes": [
-      "Remittances and household spending",
-      "Labor migration to Russia, Korea, the Gulf and Europe",
+      "Remittances and household consumption",
+      "Labor migration to Russia, South Korea, the Gulf and Europe",
       "Exchange rates and migrant income",
-      "Regions and families left behind",
-      "Policy responses"
+      "Regional inequality and households left behind",
+      "Migration policy and economic development",
+      "Currency depreciation and household welfare"
     ],
     "timeline": [
       {
@@ -25,8 +26,8 @@
       },
       {
         "label": "Forum day (online)",
-        "date": "December [12–13 or 13–14], 2026",
-        "isoDate": ""
+        "date": "December 12–14, 2026",
+        "isoDate": "2026-12-12"
       },
       {
         "label": "Results published",
@@ -57,16 +58,44 @@
       }
     ],
     "awards": [
-      "Certificates for all finalists and winners",
-      "Publication of the strongest papers as an SREI Working Paper",
-      "A mentorship session for the 1st place winner"
+      "Participation certificates",
+      "Potential publication as an SREI Working Paper for selected research",
+      "A mentorship session for first place"
     ],
     "howToSubmit": "Submit your paper or extended abstract through the submission form. You will receive a confirmation by email.",
     "submissionDeadline": "",
-    "forumDateStart": "",
-    "forumDateEnd": "",
+    "forumDateStart": "2026-12-12",
+    "forumDateEnd": "2026-12-14",
     "registrationMode": "google_form",
-    "registrationOpen": false
+    "registrationOpen": false,
+    "steps": [
+      {
+        "title": "Submit a 300-word abstract",
+        "text": "Describe your research question, data and method."
+      },
+      {
+        "title": "Optional full paper",
+        "text": "Add a full paper if you have one. It is not required to apply."
+      },
+      {
+        "title": "Finalists are invited",
+        "text": "Selected finalists are invited to present at the forum."
+      },
+      {
+        "title": "Present and answer questions",
+        "text": "Present your research online and answer questions from academic reviewers."
+      }
+    ],
+    "tags": [
+      "Remittances & Household Spending",
+      "Labor Migration",
+      "Exchange Rates",
+      "Migrant Income",
+      "Regional Inequality",
+      "Migration Policy"
+    ],
+    "edition": "First edition",
+    "season": "Winter 2026"
   },
   "pastEditions": []
 }

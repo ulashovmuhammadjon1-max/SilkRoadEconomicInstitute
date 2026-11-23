@@ -35,6 +35,10 @@ export type Paper = {
   keywords: string[];
   forumEdition?: string;
   note?: string;
+  originalPublication?: string;
+  originalUrl?: string;
+  researchPeriod?: string;
+  findings: { country: string; rows: { label: string; value: string }[] }[];
   body: string;
 };
 
@@ -148,6 +152,17 @@ export function getAllPapers(): Paper[] {
       keywords: list(data, "keywords", file),
       forumEdition: str(data, "forumEdition", file, false),
       note: str(data, "note", file, false),
+      originalPublication: str(data, "originalPublication", file, false),
+      originalUrl: str(data, "originalUrl", file, false),
+      researchPeriod: str(data, "researchPeriod", file, false),
+      findings: Array.isArray(data.findings)
+        ? (data.findings as { country?: unknown; rows?: unknown }[])
+            .filter((f) => f && typeof f.country === "string")
+            .map((f) => ({
+              country: String(f.country),
+              rows: (Array.isArray(f.rows) ? f.rows : []).map((r: { label?: unknown; value?: unknown }) => ({ label: String(r.label ?? ""), value: String(r.value ?? "") })),
+            }))
+        : [],
       body,
     };
   });
@@ -176,6 +191,7 @@ export type Person = {
   affiliation?: string;
   bio?: string;
   photo?: string;
+  interests?: string[];
   links?: { label: string; url: string }[];
 };
 
@@ -226,6 +242,11 @@ export type ForumData = {
     rubric: RubricItem[];
     awards: string[];
     howToSubmit: string;
+    steps?: { title: string; text: string }[];
+    /** Short theme tags for the home page. */
+    tags?: string[];
+    edition?: string;
+    season?: string;
     /** ISO date/time of the submission deadline; drives the countdown. Empty = not set. */
     submissionDeadline?: string;
     /** ISO dates of the forum itself (machine-readable twin of `dates`). */

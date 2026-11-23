@@ -18,7 +18,7 @@ export function ShareBar({ url, title }: { url: string; title: string }) {
         <button
           type="button"
           onClick={() => navigator.share({ title, url }).catch(() => {})}
-          className="inline-flex min-h-11 items-center gap-2 border border-navy px-4 text-ui font-medium text-navy hover:bg-navy hover:text-cream"
+          className="inline-flex min-h-11 items-center gap-2 rounded-full border border-navy px-4 text-ui font-medium text-navy hover:bg-navy hover:text-cream"
         >
           <Glyph name="share" size={18} /> Share…
         </button>

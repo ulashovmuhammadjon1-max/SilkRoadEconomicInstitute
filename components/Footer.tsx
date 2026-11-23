@@ -8,18 +8,18 @@ export function Footer() {
   const emailReady = !isPlaceholder(site.email);
   const instaReady = !isPlaceholder(site.instagramUrl);
   return (
-    <footer data-site-footer="" className="relative mt-32 overflow-hidden bg-navy text-cream">
-      <RouteLine className="absolute inset-x-0 top-10 h-8 w-full text-gold/60" />
+    <footer data-site-footer="" className="on-dark relative mt-24 overflow-hidden border-t border-white/10 bg-midnight text-cream">
+      <RouteLine className="absolute inset-x-0 top-10 h-8 w-full text-turquoise/50" />
       <div className="page relative grid-12 gap-y-14 pb-10 pt-28">
         <div className="col-span-12 lg:col-span-6">
-          <p className="dateline text-cream/60">Colophon</p>
-          <p className="mt-4 max-w-[16ch] font-serif text-h1 leading-[1.02] text-cream">{site.name}</p>
+          <p className="font-mono text-label uppercase text-turquoise-light">Silk Road Economic Institute</p>
+          <p className="mt-4 max-w-[14ch] font-serif text-[clamp(2.6rem,5vw,4.5rem)] leading-[0.98] text-cream">{site.name}</p>
           <p className="mt-6 max-w-md text-lead text-cream/75">{site.tagline}</p>
         </div>
         <nav aria-label="Footer" className="col-span-6 lg:col-span-2 lg:col-start-8">
-          <h2 className="dateline text-gold-light">Read</h2>
+          <h2 className="font-mono text-label uppercase text-gold">Navigate</h2>
           <ul className="mt-5 space-y-3 text-ui">
-            {nav.map((item) => (
+            {[{ href: "/", label: "Home" }, ...nav].map((item) => (
               <li key={item.href}>
                 <Link href={item.href} className="text-cream/85 hover:text-white">
                   {item.label}
@@ -29,7 +29,7 @@ export function Footer() {
           </ul>
         </nav>
         <div className="col-span-6 lg:col-span-3">
-          <h2 className="dateline text-gold-light">Write to us</h2>
+          <h2 className="font-mono text-label uppercase text-gold">Connect</h2>
           <ul className="mt-5 space-y-3 text-ui text-cream/85">
             <li>
               {emailReady ? (
@@ -67,14 +67,14 @@ export function Footer() {
             </li>
           </ul>
         </div>
-        <CompassRose className="pointer-events-none absolute -bottom-40 right-[-90px] hidden w-72 text-gold/20 xl:block" draw delay={200} />
+        <CompassRose className="pointer-events-none absolute -bottom-40 right-[-90px] hidden w-72 text-turquoise/20 xl:block" draw delay={200} />
       </div>
       <div className="border-t border-white/10">
         <div className="page flex flex-col gap-2 py-6 text-xs text-cream/60 sm:flex-row sm:justify-between">
           <p>
             © {year} {site.name}
           </p>
-          <p>Set in Source Serif 4 and Inter · Map geography: Natural Earth (public domain)</p>
+          <p>An independent youth-led research initiative · Not affiliated with any government, university or international organization · Map data: Natural Earth</p>
         </div>
       </div>
     </footer>

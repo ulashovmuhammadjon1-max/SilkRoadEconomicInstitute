@@ -86,9 +86,25 @@ export default function ForumPage() {
         <ThemesMap themes={current.themes} map={<MapSvg variant="mini" className="h-auto w-full" />} />
       </section>
 
+      {/* Steps */}
+      {current.steps && current.steps.length > 0 && (
+        <section aria-labelledby="steps" className="page py-16">
+          <SectionHead no="06.2" title="How to apply" id="steps" />
+          <ol className="grid gap-6 md:grid-cols-2 lg:ml-[calc((100%+var(--gutter))/6)] lg:grid-cols-4">
+            {current.steps.map((st, i) => (
+              <li key={st.title} className="rounded-[24px] border border-cream-300 bg-paper p-6" data-reveal="up" style={{ "--d": `${i * 120}ms` } as CSSProperties}>
+                <span className="font-mono text-xs text-turquoise-ink">Step 0{i + 1}</span>
+                <p className="mt-3 font-serif text-h3 text-midnight">{st.title}</p>
+                <p className="mt-2 text-ink-soft">{st.text}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
+
       {/* Timeline */}
       <section aria-labelledby="timeline" className="page py-16">
-        <SectionHead no="06.2" title="Timeline" id="timeline" />
+        <SectionHead no="06.3" title="Timeline" id="timeline" />
         <div className="grid-12">
           <div className="relative col-span-12 lg:col-span-8 lg:col-start-3">
             <div aria-hidden="true" className="absolute bottom-3 left-0 top-3 w-px bg-gold" data-reveal="spine" />
@@ -110,9 +126,9 @@ export default function ForumPage() {
       </section>
 
       {/* How to submit */}
-      <section aria-labelledby="submit" className="bg-navy py-20 text-cream">
+      <section aria-labelledby="submit" className="on-dark bg-deep py-20 text-cream">
         <div className="page grid-12 gap-y-6">
-          <p className="dateline col-span-12 text-gold-light lg:col-span-2 lg:pt-3">§ 06.3</p>
+          <p className="col-span-12 font-mono text-label uppercase text-turquoise-light lg:col-span-2 lg:pt-3">§ 06.4</p>
           <div className="col-span-12 lg:col-span-7">
             <h2 id="submit" className="font-serif text-h2" data-reveal="up">
               How to submit
@@ -146,7 +162,7 @@ export default function ForumPage() {
 
       {/* Rubric */}
       <section aria-labelledby="rubric-title" id="rubric" className="page py-20">
-        <SectionHead no="06.4" title="Judging rubric" id="rubric-title" />
+        <SectionHead no="06.5" title="Judging rubric" id="rubric-title" />
         <div className="grid-12">
           <div className="col-span-12 lg:col-span-9 lg:col-start-3">
             <p className="max-w-measure text-ink-soft">Finalists are scored out of {total} points by a panel of economics professors.</p>
@@ -188,7 +204,7 @@ export default function ForumPage() {
 
       {/* Awards */}
       <section aria-labelledby="awards" className="page py-16">
-        <SectionHead no="06.5" title="Awards" id="awards" />
+        <SectionHead no="06.6" title="Awards" id="awards" />
         <ol className="grid gap-x-[var(--gutter)] gap-y-8 md:grid-cols-3 lg:ml-[calc((100%+var(--gutter))/6)]">
           {current.awards.map((a, i) => (
             <li key={a} className="border-t border-gold pt-5" data-reveal="up" style={{ "--d": `${i * 120}ms` } as CSSProperties}>
@@ -201,7 +217,7 @@ export default function ForumPage() {
 
       {/* Past editions */}
       <section aria-labelledby="past" className="page py-16">
-        <SectionHead no="06.6" title="Past editions" id="past" />
+        <SectionHead no="06.7" title="Past editions" id="past" />
         <div className="lg:ml-[calc((100%+var(--gutter))/6)]">
           {pastEditions.length === 0 ? (
             <p className="flex items-start gap-3 border-y border-cream-300 py-8 text-ink-soft">

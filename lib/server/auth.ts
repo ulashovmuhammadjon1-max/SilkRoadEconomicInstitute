@@ -25,7 +25,9 @@ export const auth = betterAuth({
   appName: "Silk Road Economic Institute",
   baseURL: baseURL(),
   basePath: AUTH_BASE_PATH,
-  secret: process.env.BETTER_AUTH_SECRET,
+  // While accounts are switched off (no secret yet) every auth endpoint returns 404,
+  // so this inert placeholder is never used to sign anything.
+  secret: process.env.BETTER_AUTH_SECRET || "accounts-disabled-placeholder-secret-0000000000",
   database: pool,
   trustedOrigins: ["https://silkroadecon.asia", "https://www.silkroadecon.asia", ...(process.env.VERCEL_URL ? [`https://${process.env.VERCEL_URL}`] : [])],
   emailAndPassword: { enabled: false },

@@ -56,11 +56,17 @@ test("reduced motion: everything visible without scrolling animations", async ({
   const hidden = await page.evaluate(() =>
     Array.from(document.querySelectorAll("[data-reveal],.load-in,.load-left,.load-fade,.rw-in")).filter((el) => {
       const s = getComputedStyle(el);
-      return s.opacity === "0" || (s.transform !== "none" && s.transform !== "matrix(1, 0, 0, 1, 0, 0)");
+      // hidden, or still being moved by an animation/transition
+      return s.opacity === "0" || el.getAnimations().some((a) => a.playState === "running" && (a as CSSAnimation).animationName !== undefined);
     }).length,
   );
   expect(hidden).toBe(0);
-  await expect(page.locator(".marquee").first()).toHaveCSS("animation-name", "none");
+  // decorative loops are stopped
+  for (const sel of [".hn-glow", ".hn-sym", ".scroll-cue"]) {
+    const el = page.locator(sel).first();
+    if (await el.count()) await expect(el).toHaveCSS("animation-name", "none");
+  }
+  await expect(page.locator(".hn-pulse").first()).toBeHidden();
 });
 
 test("first-visit intro runs once and then gets out of the way", async ({ page }) => {

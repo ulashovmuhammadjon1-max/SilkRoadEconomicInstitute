@@ -4,9 +4,11 @@ import type { ComponentProps } from "react";
 import rehypePlaceholders from "@/lib/rehype-placeholders";
 import rehypeSidenotes from "@/lib/rehype-sidenotes";
 import { Chart } from "./Chart";
+import { DataChart } from "./charts/DataChart";
 
 const components = {
   Chart,
+  DataChart,
   img: (props: ComponentProps<"img">) => (
     <span className="not-prose my-8 block" data-reveal="wipe">
       {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text */}
@@ -30,7 +32,7 @@ export function Mdx({ source, variant = "plain" }: { source: string; variant?: "
   const article = variant === "article";
   return (
     <div
-      className={`prose prose-srei max-w-none font-serif text-body prose-headings:font-serif prose-headings:font-semibold prose-h2:mt-14 prose-h2:text-h3 prose-a:decoration-gold prose-a:underline-offset-4 prose-blockquote:border-l-2 prose-blockquote:font-sans prose-blockquote:text-base prose-blockquote:text-ink-soft ${
+      className={`prose prose-srei max-w-none text-body prose-headings:font-serif prose-headings:font-normal prose-h2:mt-14 prose-h2:text-h2 prose-a:decoration-gold prose-a:underline-offset-4 prose-blockquote:border-l-2 prose-blockquote:font-sans prose-blockquote:text-base prose-blockquote:text-ink-soft ${
         article ? "drop-cap has-sidenotes" : ""
       }`}
     >

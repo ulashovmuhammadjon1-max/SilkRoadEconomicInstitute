@@ -54,7 +54,8 @@ export default async function PaperPage({ params }: Props) {
     [paper.authors.length > 1 ? "Authors" : "Author", joinNames(paper.authors)],
     ["Date", <WithPlaceholders key="d" text={formatDate(paper.date)} />],
     ...(paper.forumEdition ? [["Forum edition", <WithPlaceholders key="f" text={paper.forumEdition} />] as [string, React.ReactNode]] : []),
-    ...(paper.note ? [["Note", <WithPlaceholders key="n" text={paper.note} />] as [string, React.ReactNode]] : []),
+    ...(paper.originalPublication ? [["Original publication", paper.originalPublication] as [string, React.ReactNode]] : paper.note ? [["Note", <WithPlaceholders key="n" text={paper.note} />] as [string, React.ReactNode]] : []),
+    ...(paper.researchPeriod ? [["Research period", paper.researchPeriod] as [string, React.ReactNode]] : []),
   ];
 
   return (
@@ -85,7 +86,7 @@ export default async function PaperPage({ params }: Props) {
             ))}
           </dl>
           <div className="load-in mt-5 flex flex-wrap gap-3" style={{ "--d": "500ms" } as CSSProperties}>
-            {paper.pdfExists ? (
+            {paper.pdfExists && (
               <>
                 <a href={paper.pdfPath} download className="btn btn-primary min-h-11 px-5">
                   <Glyph name="download" size={18} /> Download PDF
@@ -94,8 +95,14 @@ export default async function PaperPage({ params }: Props) {
                   <Glyph name="external" size={18} /> Open
                 </a>
               </>
-            ) : (
-              <p className="border border-dashed border-gold px-4 py-2.5 text-sm text-ink-soft">
+            )}
+            {paper.originalUrl && !paper.originalUrl.startsWith("[") && (
+              <a href={paper.originalUrl} target="_blank" rel="noopener noreferrer" className="btn btn-ghost min-h-11 px-5">
+                <Glyph name="external" size={18} /> Original publication
+              </a>
+            )}
+            {!paper.pdfExists && (
+              <p className="rounded-xl border border-dashed border-gold px-4 py-2.5 text-sm text-ink-soft">
                 PDF coming soon <span className="placeholder">[add file at /public{paper.pdfPath}]</span>
               </p>
             )}
@@ -108,7 +115,7 @@ export default async function PaperPage({ params }: Props) {
           <h2 id="abstract" className="label">
             Abstract
           </h2>
-          <p className="mt-4 font-serif text-lead leading-relaxed text-ink onum" data-reveal="up">
+          <p className="mt-4 text-lead leading-relaxed text-ink" data-reveal="up">
             <WithPlaceholders text={paper.abstract} />
           </p>
           {paper.keywords.length > 0 && (
@@ -118,7 +125,29 @@ export default async function PaperPage({ params }: Props) {
             </p>
           )}
         </section>
-        <div className="col-span-2 col-start-11 hidden self-start text-gold-dark lg:block">
+        {paper.findings.length > 0 && (
+          <section aria-labelledby="findings" className="col-span-12 lg:col-span-9 lg:col-start-3">
+            <h2 id="findings" className="label">
+              Key findings · as reported in the paper
+            </h2>
+            <div className="mt-4 grid gap-4 md:grid-cols-2">
+              {paper.findings.map((f, i) => (
+                <div key={f.country} className={`rounded-2xl border p-6 ${i % 2 === 0 ? "border-coral/40 bg-[#FBE9E3]" : "border-turquoise/40 bg-[#E6F4F3]"}`} data-reveal="up" style={{ "--d": `${i * 120}ms` } as CSSProperties}>
+                  <h3 className={`font-mono text-label uppercase ${i % 2 === 0 ? "text-coral-ink" : "text-turquoise-ink"}`}>{f.country}</h3>
+                  <dl className="mt-3 space-y-3">
+                    {f.rows.map((r, k) => (
+                      <div key={r.label}>
+                        <dt className="text-xs text-ink-muted">{r.label}</dt>
+                        <dd className={k === 0 ? "font-serif text-h3 text-midnight tnum" : "text-ink"}>{r.value}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+        <div className="col-span-2 col-start-11 row-start-1 hidden self-start text-gold-dark lg:block">
           <EmblemPapers className="w-full" />
         </div>
 

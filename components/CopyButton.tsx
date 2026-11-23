@@ -18,7 +18,7 @@ export function CopyButton({ text, label = "Copy citation", className = "" }: { 
           setCopied(false);
         }
       }}
-      className={`inline-flex min-h-11 items-center gap-2 border border-navy px-4 text-ui font-medium text-navy transition-colors hover:bg-navy hover:text-cream ${className}`}
+      className={`inline-flex min-h-11 items-center gap-2 rounded-full border border-navy px-4 text-ui font-medium text-navy transition-colors hover:bg-navy hover:text-cream ${className}`}
     >
       {copied ? (
         <StampCheck className="animate-[stamp_260ms_cubic-bezier(0.22,1,0.36,1)] motion-reduce:animate-none" />
