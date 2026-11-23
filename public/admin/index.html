@@ -9,6 +9,14 @@
     <link href="/admin/config.yml" type="text/yaml" rel="cms-config-url" />
   </head>
   <body>
+    <script>
+      // Start the editor manually so the GitHub login runs on whatever address
+      // this page is opened from (silkroadecon.asia or the *.vercel.app address).
+      window.CMS_MANUAL_INIT = true;
+    </script>
     <script src="https://unpkg.com/decap-cms@3.17.3/dist/decap-cms.js"></script>
+    <script>
+      CMS.init({ config: { backend: { base_url: window.location.origin } } });
+    </script>
   </body>
 </html>

@@ -6,7 +6,7 @@ backend:
   name: github
   repo: ulashovmuhammadjon1-max/SilkRoadEconomicInstitute
   branch: main
-  base_url: https://silkroadecon.asia
+  base_url: https://silkroadecon.asia   # overridden in admin/index.html with the current address
   auth_endpoint: api/auth
   commit_messages:
     create: "Add {{collection}} “{{slug}}”"
