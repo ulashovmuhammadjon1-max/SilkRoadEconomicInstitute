@@ -1,0 +1,35 @@
+{
+  "current": {
+    "name": "Winter 2026 Research Forum",
+    "status": "open",
+    "dates": "December [12–13 or 13–14], 2026",
+    "format": "Online. Finalists present live to a panel of economics professors, followed by Q&A.",
+    "eligibility": "High school and university students from any country. Individual and team submissions welcome.",
+    "themes": [
+      "Remittances and household spending",
+      "Labor migration to Russia, Korea, the Gulf and Europe",
+      "Exchange rates and migrant income",
+      "Regions and families left behind",
+      "Policy responses"
+    ],
+    "timeline": [
+      { "label": "Submission deadline", "date": "[date]" },
+      { "label": "Finalists announced", "date": "[date]" },
+      { "label": "Forum day (online)", "date": "December [12–13 or 13–14], 2026" },
+      { "label": "Results published", "date": "[date]" }
+    ],
+    "rubric": [
+      { "criterion": "Research question", "points": 25, "description": "Is the question clear, focused and relevant to migration or remittances in Central Asia?" },
+      { "criterion": "Data & method", "points": 30, "description": "Are the data appropriate and the method sound, transparent and honestly reported?" },
+      { "criterion": "Insight", "points": 25, "description": "Does the work tell us something new or useful, with conclusions that follow from the evidence?" },
+      { "criterion": "Presentation & Q&A", "points": 20, "description": "Is the presentation clear, and does the presenter handle questions from the judges well?" }
+    ],
+    "awards": [
+      "Certificates for all finalists and winners",
+      "Publication of the strongest papers as an SREI Working Paper",
+      "A mentorship session for the 1st place winner"
+    ],
+    "howToSubmit": "Submit your paper or extended abstract through the submission form. You will receive a confirmation by email."
+  },
+  "pastEditions": []
+}

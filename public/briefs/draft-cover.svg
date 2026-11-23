@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="t">
+  <title id="t">Placeholder cover image</title>
+  <rect width="1200" height="630" fill="#1B2A4A"/>
+  <path d="M0 470 C 200 400, 330 520, 520 440 S 860 360, 1000 420 S 1150 470, 1200 430" fill="none" stroke="#B8964F" stroke-width="2" stroke-dasharray="2 10" stroke-linecap="round"/>
+  <g fill="#B8964F"><circle cx="160" cy="432" r="6"/><circle cx="520" cy="440" r="6"/><circle cx="880" cy="388" r="6"/><circle cx="1110" cy="446" r="6"/></g>
+  <text x="80" y="250" font-family="Georgia, serif" font-size="56" fill="#F5EFE3">[Cover image placeholder]</text>
+  <text x="80" y="310" font-family="Arial, sans-serif" font-size="26" fill="#D4BC86">Replace /public/briefs/draft-cover.svg or set a new coverImage</text>
+</svg>

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img" aria-labelledby="t">
+  <title id="t">Placeholder chart: not real data</title>
+  <rect width="800" height="450" fill="#FBF8F2"/>
+  <g stroke="#DDD0B5" stroke-width="1">
+    <line x1="80" y1="60" x2="760" y2="60"/><line x1="80" y1="140" x2="760" y2="140"/>
+    <line x1="80" y1="220" x2="760" y2="220"/><line x1="80" y1="300" x2="760" y2="300"/>
+  </g>
+  <line x1="80" y1="380" x2="760" y2="380" stroke="#1B2A4A" stroke-width="1.5"/>
+  <g fill="#1B2A4A" opacity="0.18">
+    <rect x="110" y="250" width="50" height="130"/><rect x="190" y="220" width="50" height="160"/>
+    <rect x="270" y="260" width="50" height="120"/><rect x="350" y="190" width="50" height="190"/>
+    <rect x="430" y="210" width="50" height="170"/><rect x="510" y="160" width="50" height="220"/>
+    <rect x="590" y="180" width="50" height="200"/><rect x="670" y="140" width="50" height="240"/>
+  </g>
+  <polyline points="135,300 215,280 295,310 375,240 455,250 535,200 615,215 695,170" fill="none" stroke="#B8964F" stroke-width="3" opacity="0.6"/>
+  <text x="400" y="200" text-anchor="middle" font-family="Georgia, serif" font-size="34" fill="#1B2A4A">PLACEHOLDER CHART</text>
+  <text x="400" y="240" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#5B6475">Not real data. Replace with your own chart image.</text>
+  <text x="80" y="415" font-family="Arial, sans-serif" font-size="14" fill="#5B6475">[x-axis label]</text>
+  <text x="80" y="45" font-family="Arial, sans-serif" font-size="14" fill="#5B6475">[y-axis label, units]</text>
+</svg>
