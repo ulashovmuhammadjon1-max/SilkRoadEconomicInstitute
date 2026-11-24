@@ -33,7 +33,19 @@ export const auth = betterAuth({
   emailAndPassword: { enabled: false },
   socialProviders: google,
   session: { expiresIn: 60 * 60 * 24 * 30, updateAge: 60 * 60 * 24 },
-  rateLimit: { enabled: true, storage: "database", window: 60, max: 30, customRules: { "/sign-in/magic-link": { window: 60, max: 3 } } },
+  // Per-IP limits. Schools may share one IP, so the general limit is generous;
+  // sending sign-in emails is the expensive/abusable action and is limited tightly.
+  rateLimit: {
+    enabled: true,
+    storage: "database",
+    window: 60,
+    max: 120,
+    customRules: {
+      "/get-session": false,
+      "/sign-in/magic-link": { window: 60, max: 10 },
+      "/magic-link/verify": { window: 60, max: 30 },
+    },
+  },
   advanced: { cookiePrefix: "srei", useSecureCookies: process.env.NODE_ENV === "production" },
   plugins: [
     magicLink({

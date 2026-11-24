@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
+import { features } from "@/lib/features";
 import { site } from "@/lib/site";
+import { HeaderAccount } from "./header/HeaderAccount";
 import { HeaderShell } from "./header/HeaderShell";
 import { MobileMenu } from "./header/MobileMenu";
 import { NavLinks } from "./header/NavLinks";
@@ -20,7 +22,12 @@ export function Header() {
         <div className="flex items-center gap-1 md:gap-6">
           <NavLinks />
           <SearchButton />
-          <MobileMenu />
+          {features.accounts && (
+            <div className="hidden sm:block">
+              <HeaderAccount />
+            </div>
+          )}
+          <MobileMenu accounts={features.accounts} />
         </div>
       </div>
     </HeaderShell>

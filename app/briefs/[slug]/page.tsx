@@ -7,7 +7,9 @@ import { ScrollProgress } from "@/components/motion/ScrollProgress";
 import { Glyph } from "@/components/ornaments/Glyph";
 import { RouteLine } from "@/components/ornaments/Ornaments";
 import { WithPlaceholders } from "@/components/Placeholder";
+import { NewsletterForm } from "@/components/newsletter/NewsletterForm";
 import { ShareBar } from "@/components/ShareBar";
+import { features, turnstileSiteKey } from "@/lib/features";
 import { getAdjacentBriefs, getAllBriefs, getBrief } from "@/lib/content";
 import { formatDate } from "@/lib/format";
 import { absoluteUrl } from "@/lib/site";
@@ -106,6 +108,11 @@ export default async function BriefPage({ params }: Props) {
           <div className="mt-16 border-t border-cream-300 pt-8">
             <ShareBar url={url} title={brief.title} />
           </div>
+          {features.newsletter && (
+            <div className="no-print mt-12 rounded-[24px] border border-cream-300 bg-paper p-6">
+              <NewsletterForm id="brief-newsletter" turnstileSiteKey={features.turnstile ? turnstileSiteKey : ""} />
+            </div>
+          )}
         </div>
       </div>
 

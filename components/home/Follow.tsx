@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { features, turnstileSiteKey } from "@/lib/features";
 import { isPlaceholder, site } from "@/lib/site";
+import { NewsletterForm } from "../newsletter/NewsletterForm";
 import { Glyph } from "../ornaments/Glyph";
 import { RouteLine } from "../ornaments/Ornaments";
 
@@ -30,6 +32,11 @@ export function Follow() {
               Contact SREI <Glyph name="arrow" className="arrow" />
             </Link>
           </div>
+          {features.newsletter && (
+            <div className="mt-12 max-w-xl">
+              <NewsletterForm tone="dark" id="follow-newsletter" turnstileSiteKey={features.turnstile ? turnstileSiteKey : ""} />
+            </div>
+          )}
         </div>
       </div>
     </section>

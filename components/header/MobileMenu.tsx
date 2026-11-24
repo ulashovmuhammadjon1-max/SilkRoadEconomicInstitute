@@ -9,7 +9,7 @@ import { Glyph } from "../ornaments/Glyph";
 import { RouteLine } from "../ornaments/Ornaments";
 
 /** Full-screen cream sheet; items stagger in and a route line draws along the bottom. */
-export function MobileMenu() {
+export function MobileMenu({ accounts = false }: { accounts?: boolean }) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
@@ -103,6 +103,11 @@ export function MobileMenu() {
                   );
                 })}
               </ol>
+              {accounts && (
+                <Link href="/account" className="mt-8 inline-flex min-h-11 items-center rounded-full border border-white/25 px-5 text-sm text-cream">
+                  My account / Sign in
+                </Link>
+              )}
               <p className="mt-8 text-sm text-cream/70">
                 <a href={site.telegramUrl} className="underline decoration-turquoise underline-offset-4" target="_blank" rel="noopener noreferrer">
                   Telegram

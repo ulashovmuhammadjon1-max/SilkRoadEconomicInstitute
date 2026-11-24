@@ -4,6 +4,7 @@ const PORT = Number(process.env.PORT ?? 3210);
 
 export default defineConfig({
   testDir: "e2e",
+  testIgnore: ["accounts/**"],
   timeout: 60_000,
   fullyParallel: true,
   reporter: [["list"]],

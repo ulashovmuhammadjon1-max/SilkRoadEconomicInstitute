@@ -72,7 +72,14 @@ export function Footer() {
       <div className="border-t border-white/10">
         <div className="page flex flex-col gap-2 py-6 text-xs text-cream/60 sm:flex-row sm:justify-between">
           <p>
-            © {year} {site.name}
+            © {year} {site.name} ·{" "}
+            <Link href="/privacy" className="hover:text-cream">
+              Privacy
+            </Link>{" "}
+            ·{" "}
+            <Link href="/terms" className="hover:text-cream">
+              Terms
+            </Link>
           </p>
           <p>An independent youth-led research initiative · Not affiliated with any government, university or international organization · Map data: Natural Earth</p>
         </div>
