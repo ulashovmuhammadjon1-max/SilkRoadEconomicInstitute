@@ -30,7 +30,15 @@ export const auth = betterAuth({
   secret: process.env.BETTER_AUTH_SECRET || "accounts-disabled-placeholder-secret-0000000000",
   database: pool,
   trustedOrigins: ["https://silkroadecon.asia", "https://www.silkroadecon.asia", ...(process.env.VERCEL_URL ? [`https://${process.env.VERCEL_URL}`] : [])],
-  emailAndPassword: { enabled: false },
+  // Sign-up without email verification (owner's choice): accounts work as soon as
+  // a database exists. Passwords are hashed (scrypt) by Better Auth.
+  emailAndPassword: {
+    enabled: true,
+    requireEmailVerification: false,
+    autoSignIn: true,
+    minPasswordLength: 8,
+    maxPasswordLength: 128,
+  },
   socialProviders: google,
   session: { expiresIn: 60 * 60 * 24 * 30, updateAge: 60 * 60 * 24 },
   // Per-IP limits. Schools may share one IP, so the general limit is generous;
@@ -43,11 +51,15 @@ export const auth = betterAuth({
     customRules: {
       "/get-session": false,
       "/sign-in/magic-link": { window: 60, max: 10 },
+      "/sign-up/email": { window: 60, max: 10 },
+      "/sign-in/email": { window: 60, max: 15 },
       "/magic-link/verify": { window: 60, max: 30 },
     },
   },
   advanced: { cookiePrefix: "srei", useSecureCookies: process.env.NODE_ENV === "production" },
   plugins: [
+    ...(process.env.RESEND_API_KEY || process.env.EMAIL_DEV_OUTBOX
+      ? [
     magicLink({
       expiresIn: 600,
       sendMagicLink: async ({ email, url }) => {
@@ -55,8 +67,10 @@ export const auth = betterAuth({
         await sendEmail({ to: email, ...m });
       },
     }),
+        ]
+      : []),
     ...(process.env.TURNSTILE_SECRET_KEY && process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
-      ? [captcha({ provider: "cloudflare-turnstile", secretKey: process.env.TURNSTILE_SECRET_KEY, endpoints: ["/sign-in/magic-link"] })]
+      ? [captcha({ provider: "cloudflare-turnstile", secretKey: process.env.TURNSTILE_SECRET_KEY, endpoints: ["/sign-in/magic-link", "/sign-up/email", "/sign-in/email"] })]
       : []),
     nextCookies(),
   ],

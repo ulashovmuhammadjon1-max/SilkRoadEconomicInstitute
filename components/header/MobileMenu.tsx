@@ -104,9 +104,14 @@ export function MobileMenu({ accounts = false }: { accounts?: boolean }) {
                 })}
               </ol>
               {accounts && (
-                <Link href="/account" className="mt-8 inline-flex min-h-11 items-center rounded-full border border-white/25 px-5 text-sm text-cream">
-                  My account / Sign in
-                </Link>
+                <div className="mt-8 flex flex-wrap gap-3">
+                  <Link href="/account" className="inline-flex min-h-11 items-center rounded-full border border-white/25 px-5 text-sm text-cream">
+                    My account / Sign in
+                  </Link>
+                  <Link href="/signup" className="inline-flex min-h-11 items-center rounded-full bg-turquoise px-5 text-sm text-midnight">
+                    Create account
+                  </Link>
+                </div>
               )}
               <p className="mt-8 text-sm text-cream/70">
                 <a href={site.telegramUrl} className="underline decoration-turquoise underline-offset-4" target="_blank" rel="noopener noreferrer">

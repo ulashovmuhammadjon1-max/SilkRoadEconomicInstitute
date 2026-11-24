@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
+import { features } from "@/lib/features";
 import { Glyph } from "../ornaments/Glyph";
 
 const AUDIENCES = [
@@ -37,7 +38,7 @@ export function Participate() {
           ))}
         </ul>
         <div className="mt-12 flex flex-col gap-3 sm:flex-row">
-          <Link href="/forum" className="btn btn-primary">
+          <Link href={features.accounts ? "/signup" : "/forum"} className="btn btn-primary">
             Student Participation <Glyph name="arrow" className="arrow" />
           </Link>
           <Link href="/contact" className="btn border border-lavender-ink text-lavender-ink hover:bg-lavender-ink hover:text-paper">

@@ -38,7 +38,7 @@ export function HeaderAccount() {
   return (
     <div ref={ref} className="relative flex h-11 w-[5.5rem] items-center justify-end">
       {user === undefined ? null : user === null ? (
-        <Link href="/signin" className="rounded-full border border-white/25 px-4 py-2 text-sm text-cream hover:border-turquoise hover:text-turquoise-light">
+        <Link href="/signin" className="whitespace-nowrap rounded-full border border-white/25 px-4 py-2 text-sm text-cream hover:border-turquoise hover:text-turquoise-light">
           Sign in
         </Link>
       ) : (

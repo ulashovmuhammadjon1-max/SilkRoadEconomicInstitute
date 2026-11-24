@@ -89,12 +89,18 @@ In a brief you can show a chart with Markdown, `![description](/briefs/chart.png
 
 ## Accounts and newsletter
 
-Sign-in (email link, optional Google), private participant profiles, and a double opt-in newsletter. They stay **switched off and invisible** until these are set in Vercel → Settings → Environment Variables:
+Sign-up with **name, email and password — no email verification** (`/signup`), sign-in (`/signin`), private participant profiles, and a double opt-in newsletter.
+
+- **Accounts** switch on as soon as a database is connected (`DATABASE_URL` + `BETTER_AUTH_SECRET`). No email service needed.
+- **Newsletter** and **"email me a sign-in link"** (a password-free way back in if someone forgets their password) also need `RESEND_API_KEY`.
+- Because emails aren't verified, someone could register with an address that isn't theirs; the address is only used for contact about the forum.
+
+Until then they stay **switched off and invisible**. Settings live in Vercel → Settings → Environment Variables:
 
 | Variable | What it is | Who sets it |
 | --- | --- | --- |
 | `DATABASE_URL` | Postgres connection (Neon) | Added automatically when you create a Neon database: Vercel project → **Storage** → **Create Database** → **Neon** (Free) → connect to this project |
-| `RESEND_API_KEY` | Sends sign-in links and newsletter emails | resend.com → API Keys → Create (type *Sensitive* in Vercel) |
+| `RESEND_API_KEY` *(optional for accounts)* | Sends newsletter emails and sign-in links | resend.com → API Keys → Create (type *Sensitive* in Vercel) |
 | `BETTER_AUTH_SECRET` | Signs sessions (random, 32+ characters) | Already set |
 | `EMAIL_FROM` *(optional)* | Defaults to `SREI <hello@silkroadecon.asia>` | You |
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` *(optional)* | "Continue with Google" button | Google Cloud OAuth client, redirect URL `https://silkroadecon.asia/api/member-auth/callback/google` |
@@ -106,7 +112,7 @@ For Resend, add the domain `silkroadecon.asia` in Resend → Domains; the DNS re
 
 **Safety rules built in:** under-13s can't create an account (nothing is kept); 13–17-year-olds confirm a parent's or guardian's agreement; profiles are never public; users can delete their account (everything is removed); sign-in and newsletter requests are rate-limited; newsletter addresses count only after the confirmation link is clicked, and every email has one-click unsubscribe. The privacy notice (`/privacy`) and terms (`/terms`) contain sections marked for legal review — have them checked before opening on-site registration.
 
-**Testing locally:** `ACCOUNTS_DB=postgres://user:pass@localhost:5432/db npm run test:accounts` builds with accounts on against a throwaway local database (emails go to a local file) and runs the sign-up, age-gate, guardian, profile, deletion and newsletter flows.
+**Testing locally:** `ACCOUNTS_DB=postgres://user:pass@localhost:5432/db npm run test:accounts` (add `NO_EMAIL=1` to test without an email service) builds with accounts on against a throwaway local database (emails go to a local file) and runs the sign-up, age-gate, guardian, profile, deletion and newsletter flows.
 
 ## Deploy
 

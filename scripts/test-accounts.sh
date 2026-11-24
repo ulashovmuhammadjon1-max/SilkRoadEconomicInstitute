@@ -6,8 +6,12 @@ set -euo pipefail
 export DATABASE_URL="$ACCOUNTS_DB"
 export BETTER_AUTH_SECRET="test-secret-$(openssl rand -hex 16)"
 export BETTER_AUTH_URL="http://localhost:3230"
-export EMAIL_DEV_OUTBOX="$(mktemp -d)/outbox.jsonl"
-export SREI_ALLOW_DEV_OUTBOX=1
+if [ "${NO_EMAIL:-}" = "1" ]; then
+  unset EMAIL_DEV_OUTBOX RESEND_API_KEY   # accounts only, no email service
+else
+  export EMAIL_DEV_OUTBOX="$(mktemp -d)/outbox.jsonl"
+  export SREI_ALLOW_DEV_OUTBOX=1
+fi
 node scripts/migrate.mjs
 npx next build
 npx playwright test -c playwright.accounts.config.ts "$@"

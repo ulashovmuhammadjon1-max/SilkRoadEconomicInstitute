@@ -18,7 +18,7 @@ export function SignInForm({ next, google, turnstileSiteKey }: { next: string; g
     setError(null);
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.trim())) {
       setError("Please enter a valid email address.");
-      document.getElementById("email")?.focus();
+      document.getElementById("ml-email")?.focus();
       return;
     }
     if (turnstileSiteKey && !token) {
@@ -55,9 +55,9 @@ export function SignInForm({ next, google, turnstileSiteKey }: { next: string; g
   return (
     <div className="space-y-8">
       <form onSubmit={submit} noValidate className="space-y-5">
-        <Field id="email" label="Email address" error={error ?? undefined}>
+        <Field id="ml-email" label="Email for the sign-in link" error={error ?? undefined}>
           <input
-            id="email"
+            id="ml-email"
             type="email"
             autoComplete="email"
             inputMode="email"
@@ -65,7 +65,7 @@ export function SignInForm({ next, google, turnstileSiteKey }: { next: string; g
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             aria-invalid={Boolean(error) || undefined}
-            aria-describedby={error ? "email-error" : undefined}
+            aria-describedby={error ? "ml-email-error" : undefined}
             className={inputCls}
           />
         </Field>

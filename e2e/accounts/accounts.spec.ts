@@ -3,7 +3,9 @@ import { expect, test, type Page } from "@playwright/test";
 import fs from "node:fs";
 import pg from "pg";
 
-const OUTBOX = process.env.EMAIL_DEV_OUTBOX!;
+const OUTBOX = process.env.EMAIL_DEV_OUTBOX ?? "";
+/** Tests that need an email service are skipped when the suite runs with NO_EMAIL=1. */
+const needsEmail = () => test.skip(!OUTBOX, "no email service in this run");
 const db = new pg.Pool({ connectionString: process.env.DATABASE_URL });
 test.afterAll(() => db.end());
 
@@ -26,7 +28,8 @@ const local = (u: string) => u.replace(/^https?:\/\/[^/]+/, "");
 
 async function signIn(page: Page, email: string) {
   await page.goto("/signin");
-  await page.getByLabel("Email address").fill(email);
+  await page.getByText("Forgot your password? Email me a sign-in link").click();
+  await page.getByLabel("Email for the sign-in link").fill(email);
   await page.getByRole("button", { name: /Email me a sign-in link/ }).click();
   await expect(page.getByText("Check your inbox")).toBeVisible();
   const m = await waitMail(email, /sign-in link/);
@@ -47,6 +50,7 @@ test("private pages redirect signed-out visitors to sign in", async ({ page }) =
 });
 
 test("newsletter: double opt-in, then one-click unsubscribe", async ({ page }) => {
+  needsEmail();
   const email = `news-${rand()}@example.test`;
   await page.goto("/briefs");
   await page.locator("#briefs-newsletter-email").fill(email);
@@ -71,6 +75,7 @@ test("newsletter: double opt-in, then one-click unsubscribe", async ({ page }) =
 });
 
 test("sign up, create profile, edit it, then delete the account", async ({ page }) => {
+  needsEmail();
   const email = `adult-${rand()}@example.test`;
   await signIn(page, email);
   await expect(page).toHaveURL(/\/account\/setup/);
@@ -99,6 +104,7 @@ test("sign up, create profile, edit it, then delete the account", async ({ page 
 });
 
 test("under-13: no account is kept", async ({ page }) => {
+  needsEmail();
   const email = `kid-${rand()}@example.test`;
   await signIn(page, email);
   await expect(page).toHaveURL(/\/account\/setup/);
@@ -109,6 +115,7 @@ test("under-13: no account is kept", async ({ page }) => {
 });
 
 test("13–17: guardian agreement is required and recorded", async ({ page }) => {
+  needsEmail();
   const email = `teen-${rand()}@example.test`;
   await signIn(page, email);
   await fillProfile(page, String(new Date().getUTCFullYear() - 16));
@@ -125,9 +132,11 @@ test("13–17: guardian agreement is required and recorded", async ({ page }) =>
 });
 
 test("expired or reused sign-in link shows a clear message", async ({ page }) => {
+  needsEmail();
   const email = `reuse-${rand()}@example.test`;
   await page.goto("/signin");
-  await page.getByLabel("Email address").fill(email);
+  await page.getByText("Forgot your password? Email me a sign-in link").click();
+  await page.getByLabel("Email for the sign-in link").fill(email);
   await page.getByRole("button", { name: /Email me a sign-in link/ }).click();
   const link = local(linkIn(await waitMail(email, /sign-in link/)));
   await page.goto(link);
@@ -135,4 +144,74 @@ test("expired or reused sign-in link shows a clear message", async ({ page }) =>
   await page.goto(link);
   await expect(page).toHaveURL(/\/signin\?error=/);
   await expect(page.getByText(/expired or was already used/)).toBeVisible();
+});
+
+// ---------- Password sign-up: works without any email service ----------
+
+async function signUp(page: Page, email: string, password = "correct horse 42") {
+  await page.goto("/signup");
+  await page.getByLabel("Full name").fill("Pass Word");
+  await page.getByLabel("Email address").fill(email);
+  await page.getByLabel("Password", { exact: true }).fill(password);
+  await page.getByRole("button", { name: "Create account" }).click();
+  await expect(page).toHaveURL(/\/account\/setup/);
+}
+
+test("password sign-up: no verification, straight to profile, then sign out and back in", async ({ page }) => {
+  const email = `pw-${rand()}@example.test`;
+  await page.goto("/signup");
+  const a11y = await new AxeBuilder({ page: page as never }).withTags(["wcag2a", "wcag2aa", "wcag21aa"]).analyze();
+  expect(a11y.violations.map((v) => v.id)).toEqual([]);
+  await signUp(page, email);
+  expect(lastMail(email)).toBeUndefined(); // no verification email
+  await expect(page.getByLabel("Full name")).toHaveValue("Pass Word");
+  await page.getByLabel("Country").selectOption("KZ");
+  await page.getByLabel("Level of study").selectOption("undergraduate");
+  await page.getByLabel("School or university").fill("Test University");
+  await page.getByLabel("Year of birth").fill("2001");
+  await page.getByRole("button", { name: "Create my profile" }).click();
+  await expect(page).toHaveURL(/\/account\?welcome=1/);
+
+  await page.getByRole("button", { name: "Sign out" }).click();
+  await expect(page).toHaveURL("/");
+  await page.goto("/account");
+  await expect(page).toHaveURL(/\/signin/);
+
+  await page.getByLabel("Email address").fill(email);
+  await page.getByLabel("Password", { exact: true }).fill("wrong password!");
+  await page.getByRole("button", { name: "Sign in", exact: true }).click();
+  await expect(page.getByText("The email or password is incorrect.")).toBeVisible();
+  await page.getByLabel("Password", { exact: true }).fill("correct horse 42");
+  await page.getByRole("button", { name: "Sign in", exact: true }).click();
+  await expect(page).toHaveURL(/\/account$/);
+  await expect(page.getByRole("heading", { name: "Pass Word" })).toBeVisible();
+
+  // passwords are stored hashed, never in plain text
+  const row = (await db.query(`select a.password from account a join "user" u on u.id = a."userId" where u.email = $1`, [email])).rows[0];
+  expect(row.password).toBeTruthy();
+  expect(row.password).not.toContain("correct horse");
+});
+
+test("password sign-up: duplicate email and short password are rejected clearly", async ({ page }) => {
+  const email = `dup-${rand()}@example.test`;
+  await signUp(page, email);
+  await page.context().clearCookies();
+  await page.goto("/signup");
+  await page.getByLabel("Full name").fill("Someone Else");
+  await page.getByLabel("Email address").fill(email);
+  await page.getByLabel("Password", { exact: true }).fill("another pass 1");
+  await page.getByRole("button", { name: "Create account" }).click();
+  await expect(page.getByText(/already exists/)).toBeVisible();
+  await page.getByLabel("Password", { exact: true }).fill("short");
+  await page.getByRole("button", { name: "Create account" }).click();
+  await expect(page.getByText("Use at least 8 characters.").first()).toBeVisible();
+});
+
+test("password sign-up: under-13 is removed completely", async ({ page }) => {
+  const email = `pwkid-${rand()}@example.test`;
+  await signUp(page, email);
+  await fillProfile(page, String(new Date().getUTCFullYear() - 11));
+  await page.getByRole("button", { name: "Create my profile" }).click();
+  await expect(page.getByText(/you need to be at least 13/i).first()).toBeVisible();
+  await expect.poll(async () => (await db.query(`select count(*)::int c from "user" where email=$1`, [email])).rows[0].c).toBe(0);
 });
